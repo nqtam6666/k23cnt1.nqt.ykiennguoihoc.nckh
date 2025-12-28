@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Phản hồi - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="h-full bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <nav class="bg-white dark:bg-gray-800 shadow-lg sticky top-0 z-50 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="/" class="flex items-center space-x-2 text-xl font-bold text-gray-800 dark:text-white">
+                    <i class="fas fa-graduation-cap text-primary-600 dark:text-primary-400"></i>
+                    <span>Admin - Quản lý Phản hồi</span>
+                </a>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400">
+                        <i class="fas fa-home"></i>
+                    </a>
+                    <button id="theme-toggle" class="p-2 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:inline"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <h2 class="text-3xl font-bold mb-6 text-gray-800 dark:text-white flex items-center">
+            <i class="fas fa-tasks text-primary-600 dark:text-primary-400 mr-3"></i>
+            Phản hồi chờ duyệt
+        </h2>
+
+        <div th:if="${success}" 
+             class="mb-6 p-4 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-300 rounded-lg flex items-center justify-between">
+            <div class="flex items-center">
+                <i class="fas fa-check-circle mr-2"></i>
+                <span th:text="${success}"></span>
+            </div>
+            <button type="button" class="text-green-700 dark:text-green-300 hover:text-green-900 dark:hover:text-green-100" onclick="this.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div th:if="${error}" 
+             class="mb-6 p-4 bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 rounded-lg flex items-center justify-between">
+            <div class="flex items-center">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                <span th:text="${error}"></span>
+            </div>
+            <button type="button" class="text-red-700 dark:text-red-300 hover:text-red-900 dark:hover:text-red-100" onclick="this.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div th:if="${danhSachPhanHoi == null or danhSachPhanHoi.isEmpty()}" 
+             class="bg-blue-100 dark:bg-blue-900 border border-blue-400 dark:border-blue-700 text-blue-700 dark:text-blue-300 px-4 py-3 rounded-lg flex items-center">
+            <i class="fas fa-info-circle mr-2"></i>
+            Không có phản hồi nào chờ duyệt.
+        </div>
+
+        <div th:if="${danhSachPhanHoi != null and !danhSachPhanHoi.isEmpty()}">
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                    <thead class="bg-gray-800 dark:bg-gray-900 text-white">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">STT</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Người học</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider hidden md:table-cell">Dịch vụ</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider hidden lg:table-cell">Loại</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Điểm</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider hidden lg:table-cell">Ngày gửi</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <tr th:each="phanHoi, iterStat : ${danhSachPhanHoi}" 
+                            class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-white" th:text="${iterStat.count}"></td>
+                            <td class="px-4 py-4">
+                                <div class="text-sm">
+                                    <div class="font-medium text-gray-800 dark:text-white" th:text="${phanHoi.nguoiHoc.hoTen}"></div>
+                                    <div class="text-gray-500 dark:text-gray-400 text-xs" th:text="${phanHoi.nguoiHoc.maSinhVien}"></div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-white hidden md:table-cell" th:text="${phanHoi.dichVuDaoTao.tenDichVu}"></td>
+                            <td class="px-4 py-4 whitespace-nowrap hidden lg:table-cell">
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200" 
+                                      th:text="${phanHoi.loaiPhanHoi.tenLoai}"></span>
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap">
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200" 
+                                      th:text="${phanHoi.diemDanhGia + '/5'}"></span>
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 hidden lg:table-cell" 
+                                th:text="${#temporals.format(phanHoi.ngayTao, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td class="px-4 py-4 whitespace-nowrap text-sm">
+                                <div class="flex flex-wrap gap-2">
+                                    <button type="button" 
+                                            class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-xs"
+                                            data-bs-toggle="modal" 
+                                            th:attr="data-bs-target='#duyetModal' + ${phanHoi.id}">
+                                        <i class="fas fa-check mr-1"></i> Duyệt
+                                    </button>
+                                    <button type="button" 
+                                            class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-xs"
+                                            data-bs-toggle="modal" 
+                                            th:attr="data-bs-target='#xoaModal' + ${phanHoi.id}">
+                                        <i class="fas fa-trash mr-1"></i> Xóa
+                                    </button>
+                                    <button type="button" 
+                                            class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-xs"
+                                            data-bs-toggle="modal" 
+                                            th:attr="data-bs-target='#chiTietModal' + ${phanHoi.id}">
+                                        <i class="fas fa-eye mr-1"></i> Chi tiết
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals for each feedback -->
+    <div th:each="phanHoi : ${danhSachPhanHoi}">
+        <!-- Duyệt Modal -->
+        <div class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50" 
+             th:id="'duyetModal' + ${phanHoi.id}" 
+             id="duyetModal">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
+                    <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                        <h5 class="text-xl font-semibold text-gray-800 dark:text-white">Duyệt Phản hồi</h5>
+                    </div>
+                    <form th:action="@{/admin/phan-hoi/{id}/duyet(id=${phanHoi.id})}" method="post">
+                        <div class="p-6 space-y-4">
+                            <p class="text-gray-800 dark:text-white"><strong>Người học:</strong> <span th:text="${phanHoi.nguoiHoc.hoTen}"></span></p>
+                            <p class="text-gray-800 dark:text-white"><strong>Nội dung:</strong> <span th:text="${#strings.abbreviate(phanHoi.noiDung, 100)}"></span></p>
+                            <div>
+                                <label for="ghiChu" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Ghi chú (tùy chọn)</label>
+                                <textarea id="ghiChu" name="ghiChu" rows="3" 
+                                          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"></textarea>
+                            </div>
+                        </div>
+                        <div class="p-6 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-3">
+                            <button type="button" 
+                                    class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                                    onclick="this.closest('.fixed').classList.add('hidden')">
+                                Hủy
+                            </button>
+                            <button type="submit" 
+                                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                                Duyệt
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Xóa Modal -->
+        <div class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50" 
+             th:id="'xoaModal' + ${phanHoi.id}" 
+             id="xoaModal">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
+                    <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                        <h5 class="text-xl font-semibold text-gray-800 dark:text-white">Xác nhận Xóa</h5>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-800 dark:text-white">Bạn có chắc chắn muốn xóa phản hồi này?</p>
+                    </div>
+                    <div class="p-6 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-3">
+                        <button type="button" 
+                                class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                                onclick="this.closest('.fixed').classList.add('hidden')">
+                            Hủy
+                        </button>
+                        <form th:action="@{/admin/phan-hoi/{id}/xoa(id=${phanHoi.id})}" method="post" class="inline">
+                            <button type="submit" 
+                                    class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                                Xóa
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chi tiết Modal -->
+        <div class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50" 
+             th:id="'chiTietModal' + ${phanHoi.id}" 
+             id="chiTietModal">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                    <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                        <h5 class="text-xl font-semibold text-gray-800 dark:text-white">Chi tiết Phản hồi</h5>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <p class="text-gray-800 dark:text-white"><strong>Người học:</strong> <span th:text="${phanHoi.nguoiHoc.hoTen}"></span> (<span th:text="${phanHoi.nguoiHoc.maSinhVien}"></span>)</p>
+                        <p class="text-gray-800 dark:text-white"><strong>Dịch vụ:</strong> <span th:text="${phanHoi.dichVuDaoTao.tenDichVu}"></span></p>
+                        <p class="text-gray-800 dark:text-white"><strong>Loại:</strong> <span th:text="${phanHoi.loaiPhanHoi.tenLoai}"></span></p>
+                        <p class="text-gray-800 dark:text-white"><strong>Điểm:</strong> <span th:text="${phanHoi.diemDanhGia + '/5'}"></span></p>
+                        <p class="text-gray-800 dark:text-white"><strong>Nội dung:</strong></p>
+                        <div class="border border-gray-200 dark:border-gray-700 p-3 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-white whitespace-pre-wrap" 
+                             th:text="${phanHoi.noiDung}"></div>
+                    </div>
+                    <div class="p-6 border-t border-gray-200 dark:border-gray-700 flex justify-end">
+                        <button type="button" 
+                                class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                                onclick="this.closest('.fixed').classList.add('hidden')">
+                            Đóng
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/dark-mode.js}"></script>
+    <script>
+        // Modal toggle functionality
+        document.querySelectorAll('[data-bs-toggle="modal"]').forEach(button => {
+            button.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-bs-target');
+                const modal = document.querySelector(targetId);
+                if (modal) {
+                    modal.classList.remove('hidden');
+                }
+            });
+        });
+
+        // Close modal when clicking outside
+        document.querySelectorAll('[id$="Modal"]').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

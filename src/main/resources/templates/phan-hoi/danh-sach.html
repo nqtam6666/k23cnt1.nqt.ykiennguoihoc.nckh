@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách Phản hồi - Đại học Nguyễn Trãi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="h-full bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <nav class="bg-white dark:bg-gray-800 shadow-lg sticky top-0 z-50 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="/" class="flex items-center space-x-2 text-xl font-bold text-gray-800 dark:text-white">
+                    <i class="fas fa-graduation-cap text-primary-600 dark:text-primary-400"></i>
+                    <span>Đại học Nguyễn Trãi</span>
+                </a>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400">
+                        <i class="fas fa-home"></i>
+                    </a>
+                    <a href="/phan-hoi/form" class="text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400">
+                        <i class="fas fa-paper-plane"></i>
+                    </a>
+                    <button id="theme-toggle" class="p-2 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:inline"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <h2 class="text-3xl font-bold mb-6 text-gray-800 dark:text-white flex items-center">
+            <i class="fas fa-list text-primary-600 dark:text-primary-400 mr-3"></i>
+            Danh sách Phản hồi đã được duyệt
+        </h2>
+        
+        <div th:if="${danhSachPhanHoi == null or danhSachPhanHoi.isEmpty()}" 
+             class="bg-blue-100 dark:bg-blue-900 border border-blue-400 dark:border-blue-700 text-blue-700 dark:text-blue-300 px-4 py-3 rounded-lg flex items-center">
+            <i class="fas fa-info-circle mr-2"></i>
+            Chưa có phản hồi nào.
+        </div>
+
+        <div th:if="${danhSachPhanHoi != null and !danhSachPhanHoi.isEmpty()}" 
+             class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div th:each="phanHoi : ${danhSachPhanHoi}" 
+                 class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200 dark:border-gray-700">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="px-3 py-1 bg-primary-100 dark:bg-primary-900 text-primary-800 dark:text-primary-200 rounded-full text-sm font-semibold" 
+                              th:text="${phanHoi.dichVuDaoTao.tenDichVu}"></span>
+                        <span class="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-sm font-semibold" 
+                              th:text="${phanHoi.loaiPhanHoi.tenLoai}"></span>
+                    </div>
+                    <h5 class="text-lg font-semibold mb-2 text-gray-800 dark:text-white flex items-center">
+                        <i class="fas fa-user text-primary-600 dark:text-primary-400 mr-2"></i>
+                        <span th:text="${phanHoi.nguoiHoc.hoTen}"></span>
+                    </h5>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3" 
+                       th:text="${#strings.abbreviate(phanHoi.noiDung, 150)}"></p>
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">Điểm đánh giá:</span>
+                            <span class="ml-2 px-3 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-full text-sm font-semibold" 
+                                  th:text="${phanHoi.diemDanhGia + '/5'}"></span>
+                        </div>
+                    </div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mb-4 flex items-center">
+                        <i class="fas fa-calendar mr-2"></i>
+                        <span th:text="${#temporals.format(phanHoi.ngayTao, 'dd/MM/yyyy HH:mm')}"></span>
+                    </div>
+                    <a th:href="@{/phan-hoi/chi-tiet/{id}(id=${phanHoi.id})}" 
+                       class="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors w-full justify-center">
+                        <i class="fas fa-eye mr-2"></i>
+                        Xem chi tiết
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/dark-mode.js}"></script>
+</body>
+</html>

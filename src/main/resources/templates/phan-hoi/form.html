@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gửi Phản hồi - Đại học Nguyễn Trãi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="h-full bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="bg-white dark:bg-gray-800 shadow-lg sticky top-0 z-50 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="/" class="flex items-center space-x-2 text-xl font-bold text-gray-800 dark:text-white">
+                    <i class="fas fa-graduation-cap text-primary-600 dark:text-primary-400"></i>
+                    <span>Đại học Nguyễn Trãi</span>
+                </a>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400">
+                        <i class="fas fa-home"></i>
+                    </a>
+                    <button id="theme-toggle" class="p-2 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:inline"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 sm:p-8">
+            <h2 class="text-3xl font-bold mb-6 text-center text-gray-800 dark:text-white">
+                <i class="fas fa-comment-dots text-primary-600 dark:text-primary-400 mr-3"></i>
+                Gửi Phản hồi
+            </h2>
+            
+            <!-- Success/Error Messages -->
+            <div th:if="${success}" class="mb-6 p-4 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-300 rounded-lg flex items-center justify-between">
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <span th:text="${success}"></span>
+                </div>
+                <button type="button" class="text-green-700 dark:text-green-300 hover:text-green-900 dark:hover:text-green-100" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div th:if="${error}" class="mb-6 p-4 bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 rounded-lg flex items-center justify-between">
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    <span th:text="${error}"></span>
+                </div>
+                <button type="button" class="text-red-700 dark:text-red-300 hover:text-red-900 dark:hover:text-red-100" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <form th:action="@{/phan-hoi/submit}" th:object="${phanHoiDTO}" method="post" class="space-y-6">
+                <!-- Thông tin người học -->
+                <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-gray-50 dark:bg-gray-900">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white flex items-center">
+                        <i class="fas fa-user text-primary-600 dark:text-primary-400 mr-2"></i>
+                        Thông tin Người học
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="maSinhVien" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Mã Sinh viên <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" 
+                                   id="maSinhVien" 
+                                   th:field="*{maSinhVien}"
+                                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                                   th:classappend="${#fields.hasErrors('maSinhVien')} ? 'border-red-500'">
+                            <p th:if="${#fields.hasErrors('maSinhVien')}" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                <span th:errors="*{maSinhVien}"></span>
+                            </p>
+                        </div>
+                        <div>
+                            <label for="hoTen" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Họ và Tên <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" 
+                                   id="hoTen" 
+                                   th:field="*{hoTen}"
+                                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                                   th:classappend="${#fields.hasErrors('hoTen')} ? 'border-red-500'">
+                            <p th:if="${#fields.hasErrors('hoTen')}" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                <span th:errors="*{hoTen}"></span>
+                            </p>
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Email
+                            </label>
+                            <input type="email" 
+                                   id="email" 
+                                   th:field="*{email}"
+                                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                                   th:classappend="${#fields.hasErrors('email')} ? 'border-red-500'">
+                            <p th:if="${#fields.hasErrors('email')}" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                <span th:errors="*{email}"></span>
+                            </p>
+                        </div>
+                        <div>
+                            <label for="soDienThoai" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Số điện thoại
+                            </label>
+                            <input type="tel" 
+                                   id="soDienThoai" 
+                                   th:field="*{soDienThoai}"
+                                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thông tin phản hồi -->
+                <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-gray-50 dark:bg-gray-900">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white flex items-center">
+                        <i class="fas fa-comments text-green-600 dark:text-green-400 mr-2"></i>
+                        Nội dung Phản hồi
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="dichVuDaoTaoId" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Dịch vụ Đào tạo <span class="text-red-500">*</span>
+                            </label>
+                            <select id="dichVuDaoTaoId" 
+                                    th:field="*{dichVuDaoTaoId}"
+                                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                                    th:classappend="${#fields.hasErrors('dichVuDaoTaoId')} ? 'border-red-500'">
+                                <option value="">-- Chọn dịch vụ --</option>
+                                <option th:each="dv : ${danhSachDichVu}" 
+                                        th:value="${dv.id}" 
+                                        th:text="${dv.tenDichVu}"></option>
+                            </select>
+                            <p th:if="${#fields.hasErrors('dichVuDaoTaoId')}" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                <span th:errors="*{dichVuDaoTaoId}"></span>
+                            </p>
+                        </div>
+                        <div>
+                            <label for="loaiPhanHoiId" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Loại Phản hồi <span class="text-red-500">*</span>
+                            </label>
+                            <select id="loaiPhanHoiId" 
+                                    th:field="*{loaiPhanHoiId}"
+                                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                                    th:classappend="${#fields.hasErrors('loaiPhanHoiId')} ? 'border-red-500'">
+                                <option value="">-- Chọn loại phản hồi --</option>
+                                <option th:each="loai : ${danhSachLoaiPhanHoi}" 
+                                        th:value="${loai.id}" 
+                                        th:text="${loai.tenLoai}"></option>
+                            </select>
+                            <p th:if="${#fields.hasErrors('loaiPhanHoiId')}" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                <span th:errors="*{loaiPhanHoiId}"></span>
+                            </p>
+                        </div>
+                        <div>
+                            <label for="noiDung" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Nội dung Phản hồi <span class="text-red-500">*</span>
+                            </label>
+                            <textarea id="noiDung" 
+                                      rows="5" 
+                                      th:field="*{noiDung}"
+                                      placeholder="Vui lòng mô tả chi tiết ý kiến của bạn..."
+                                      class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none"
+                                      th:classappend="${#fields.hasErrors('noiDung')} ? 'border-red-500'"></textarea>
+                            <p th:if="${#fields.hasErrors('noiDung')}" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                <span th:errors="*{noiDung}"></span>
+                            </p>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Tối thiểu 10 ký tự</p>
+                        </div>
+                        <div>
+                            <label for="diemDanhGia" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Điểm đánh giá (1-5) <span class="text-red-500">*</span>
+                            </label>
+                            <input type="number" 
+                                   id="diemDanhGia" 
+                                   th:field="*{diemDanhGia}" 
+                                   min="1" max="5"
+                                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                                   th:classappend="${#fields.hasErrors('diemDanhGia')} ? 'border-red-500'">
+                            <p th:if="${#fields.hasErrors('diemDanhGia')}" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                <span th:errors="*{diemDanhGia}"></span>
+                            </p>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">1 = Rất không hài lòng, 5 = Rất hài lòng</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button type="submit" class="flex-1 px-6 py-3 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 transition-colors flex items-center justify-center">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        Gửi Phản hồi
+                    </button>
+                    <a href="/" class="flex-1 px-6 py-3 bg-gray-600 text-white rounded-lg font-semibold hover:bg-gray-700 transition-colors flex items-center justify-center text-center">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Quay lại
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script th:src="@{/js/dark-mode.js}"></script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống Phản hồi - Trường Đại học Nguyễn Trãi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="h-full bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="bg-white dark:bg-gray-800 shadow-lg sticky top-0 z-50 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center space-x-2 text-xl font-bold text-gray-800 dark:text-white">
+                        <i class="fas fa-graduation-cap text-primary-600 dark:text-primary-400"></i>
+                        <span>Đại học Nguyễn Trãi</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="/" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        Trang chủ
+                    </a>
+                    <a href="/phan-hoi/form" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        Gửi phản hồi
+                    </a>
+                    <a href="/phan-hoi/danh-sach" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        Danh sách phản hồi
+                    </a>
+                    <a href="/thong-ke" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        Thống kê
+                    </a>
+                    <button id="theme-toggle" class="p-2 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:inline"></i>
+                    </button>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center space-x-2">
+                    <button id="theme-toggle" class="p-2 rounded-md text-gray-700 dark:text-gray-200">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:inline"></i>
+                    </button>
+                    <button id="mobile-menu-button" class="p-2 rounded-md text-gray-700 dark:text-gray-200">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200 dark:border-gray-700">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="/" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                    Trang chủ
+                </a>
+                <a href="/phan-hoi/form" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                    Gửi phản hồi
+                </a>
+                <a href="/phan-hoi/danh-sach" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                    Danh sách phản hồi
+                </a>
+                <a href="/thong-ke" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                    Thống kê
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="bg-gradient-to-br from-primary-600 to-purple-600 text-white py-16 sm:py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold mb-6">
+                <i class="fas fa-comments mr-3"></i>
+                Hệ thống Phản hồi
+            </h1>
+            <p class="text-xl sm:text-2xl mb-8 text-primary-100">
+                Lấy ý kiến phản hồi của người học về dịch vụ đào tạo
+            </p>
+            <a href="/phan-hoi/form" class="inline-flex items-center px-6 py-3 bg-white text-primary-600 rounded-lg font-semibold hover:bg-primary-50 transition-all transform hover:scale-105 shadow-lg">
+                <i class="fas fa-paper-plane mr-2"></i>
+                Gửi phản hồi ngay
+            </a>
+        </div>
+    </div>
+
+    <!-- Services Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <h2 class="text-3xl font-bold text-center mb-12 text-gray-800 dark:text-white">
+            Dịch vụ Đào tạo
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div th:each="dichVu : ${danhSachDichVu}" 
+                 class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 p-6 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-book text-primary-600 dark:text-primary-400 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 dark:text-white" th:text="${dichVu.tenDichVu}">
+                        Tên dịch vụ
+                    </h3>
+                </div>
+                <p class="text-gray-600 dark:text-gray-300 mb-4" th:text="${dichVu.moTa}">
+                    Mô tả dịch vụ
+                </p>
+                <a th:href="@{/phan-hoi/form}" 
+                   class="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+                    <i class="fas fa-comment mr-2"></i>
+                    Phản hồi
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="bg-gray-100 dark:bg-gray-800 py-12 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div class="p-6">
+                    <div class="w-16 h-16 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-shield-alt text-primary-600 dark:text-primary-400 text-2xl"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Bảo mật thông tin</h4>
+                    <p class="text-gray-600 dark:text-gray-300">Thông tin của bạn được bảo mật tuyệt đối</p>
+                </div>
+                <div class="p-6">
+                    <div class="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-clock text-green-600 dark:text-green-400 text-2xl"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Phản hồi nhanh</h4>
+                    <p class="text-gray-600 dark:text-gray-300">Gửi phản hồi dễ dàng và nhanh chóng</p>
+                </div>
+                <div class="p-6">
+                    <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-chart-line text-blue-600 dark:text-blue-400 text-2xl"></i>
+                    </div>
+                    <h4 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Cải thiện liên tục</h4>
+                    <p class="text-gray-600 dark:text-gray-300">Ý kiến của bạn giúp cải thiện dịch vụ</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 dark:bg-gray-900 text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p>&copy; 2025 Trường Đại học Nguyễn Trãi. Nghiên cứu Khoa học - K23CNT1</p>
+            <p class="mt-2 text-gray-400">Nguyễn Quang Tâm</p>
+        </div>
+    </footer>
+
+    <script th:src="@{/js/dark-mode.js}"></script>
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button')?.addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>
