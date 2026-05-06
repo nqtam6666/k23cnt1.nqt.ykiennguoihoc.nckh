@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "phan_hoi")
@@ -16,47 +17,26 @@ public class PhanHoi {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "phan_hoi_id")
+    private Long phanHoiId;
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "nguoi_hoc_id", nullable = false)
     private NguoiHoc nguoiHoc;
     
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "dich_vu_dao_tao_id", nullable = false)
-    private DichVuDaoTao dichVuDaoTao;
+    @JoinColumn(name = "khao_sat_id", nullable = false)
+    private KhaoSat khaoSat;
     
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "loai_phan_hoi_id", nullable = false)
-    private LoaiPhanHoi loaiPhanHoi;
+    @Column(name = "thoi_gian_gui")
+    private LocalDateTime thoiGianGui;
     
-    @Column(name = "noi_dung", columnDefinition = "TEXT")
-    private String noiDung;
-    
-    @Column(name = "diem_danh_gia")
-    private Integer diemDanhGia; // 1-5 hoặc 1-10
-    
-    @Column(name = "trang_thai")
-    private Boolean trangThai = true; // true: đã duyệt, false: chờ duyệt
-    
-    @Column(name = "ngay_tao")
-    private LocalDateTime ngayTao;
-    
-    @Column(name = "ngay_cap_nhat")
-    private LocalDateTime ngayCapNhat;
-    
-    @Column(name = "ghi_chu", length = 500)
-    private String ghiChu; // Ghi chú từ admin
+    @OneToMany(mappedBy = "phanHoi", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ChiTietPhanHoi> danhSachChiTiet;
     
     @PrePersist
     protected void onCreate() {
-        ngayTao = LocalDateTime.now();
-        ngayCapNhat = LocalDateTime.now();
-    }
-    
-    @PreUpdate
-    protected void onUpdate() {
-        ngayCapNhat = LocalDateTime.now();
+        thoiGianGui = LocalDateTime.now();
     }
 }
 

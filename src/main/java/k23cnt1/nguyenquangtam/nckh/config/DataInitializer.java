@@ -1,9 +1,8 @@
 package k23cnt1.nguyenquangtam.nckh.config;
 
-import k23cnt1.nguyenquangtam.nckh.entity.DichVuDaoTao;
-import k23cnt1.nguyenquangtam.nckh.entity.LoaiPhanHoi;
-import k23cnt1.nguyenquangtam.nckh.repository.DichVuDaoTaoRepository;
-import k23cnt1.nguyenquangtam.nckh.repository.LoaiPhanHoiRepository;
+import k23cnt1.nguyenquangtam.nckh.entity.*;
+import k23cnt1.nguyenquangtam.nckh.repository.*;
+import k23cnt1.nguyenquangtam.nckh.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -12,69 +11,98 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
     
-    private final DichVuDaoTaoRepository dichVuDaoTaoRepository;
-    private final LoaiPhanHoiRepository loaiPhanHoiRepository;
+    private final NguoiDungRepository nguoiDungRepository;
+    private final KhoaRepository khoaRepository;
+    private final QuanTriRepository quanTriRepository;
+    private final GiangVienRepository giangVienRepository;
+    private final NguoiHocRepository nguoiHocRepository;
+    private final HocPhanRepository hocPhanRepository;
+    private final NhomDichVuRepository nhomDichVuRepository;
+    private final AuthService authService;
     
     @Override
     public void run(String... args) throws Exception {
-        // Khởi tạo dữ liệu mẫu cho Dịch vụ Đào tạo
-        if (dichVuDaoTaoRepository.count() == 0) {
-            DichVuDaoTao dv1 = new DichVuDaoTao();
-            dv1.setTenDichVu("Đào tạo Chuyên ngành");
-            dv1.setMoTa("Chương trình đào tạo các chuyên ngành theo chuẩn quốc tế");
-            dv1.setTrangThai(true);
-            dichVuDaoTaoRepository.save(dv1);
-            
-            DichVuDaoTao dv2 = new DichVuDaoTao();
-            dv2.setTenDichVu("Thư viện và Tài liệu học tập");
-            dv2.setMoTa("Dịch vụ thư viện, tài liệu điện tử và không gian học tập");
-            dv2.setTrangThai(true);
-            dichVuDaoTaoRepository.save(dv2);
-            
-            DichVuDaoTao dv3 = new DichVuDaoTao();
-            dv3.setTenDichVu("Cơ sở vật chất và Phòng học");
-            dv3.setMoTa("Phòng học, phòng thực hành, phòng máy tính");
-            dv3.setTrangThai(true);
-            dichVuDaoTaoRepository.save(dv3);
-            
-            DichVuDaoTao dv4 = new DichVuDaoTao();
-            dv4.setTenDichVu("Hỗ trợ Sinh viên");
-            dv4.setMoTa("Dịch vụ tư vấn, hỗ trợ học tập và đời sống sinh viên");
-            dv4.setTrangThai(true);
-            dichVuDaoTaoRepository.save(dv4);
-            
-            DichVuDaoTao dv5 = new DichVuDaoTao();
-            dv5.setTenDichVu("Hoạt động Ngoại khóa");
-            dv5.setMoTa("Các hoạt động ngoại khóa, câu lạc bộ, sự kiện");
-            dv5.setTrangThai(true);
-            dichVuDaoTaoRepository.save(dv5);
+        // Tạo Khoa
+        Khoa khoaCNTT = null;
+        if (khoaRepository.count() == 0) {
+            khoaCNTT = new Khoa();
+            khoaCNTT.setTenKhoa("Khoa Công nghệ Thông tin");
+            khoaCNTT.setMoTa("Khoa đào tạo về Công nghệ Thông tin");
+            khoaCNTT = khoaRepository.save(khoaCNTT);
+        } else {
+            khoaCNTT = khoaRepository.findAll().get(0);
         }
         
-        // Khởi tạo dữ liệu mẫu cho Loại Phản hồi
-        if (loaiPhanHoiRepository.count() == 0) {
-            LoaiPhanHoi loai1 = new LoaiPhanHoi();
-            loai1.setTenLoai("Góp ý");
-            loai1.setMoTa("Đóng góp ý kiến để cải thiện dịch vụ");
-            loai1.setTrangThai(true);
-            loaiPhanHoiRepository.save(loai1);
+        // Tạo Admin
+        if (nguoiDungRepository.count() == 0) {
+            NguoiDung admin = new NguoiDung();
+            admin.setTenDangNhap("admin");
+            admin.setMatKhau(authService.hashPassword("admin123"));
+            admin.setVaiTro("admin");
+            admin.setTrangThai(true);
+            admin = nguoiDungRepository.save(admin);
             
-            LoaiPhanHoi loai2 = new LoaiPhanHoi();
-            loai2.setTenLoai("Khiếu nại");
-            loai2.setMoTa("Khiếu nại về chất lượng dịch vụ");
-            loai2.setTrangThai(true);
-            loaiPhanHoiRepository.save(loai2);
+            QuanTri quanTri = new QuanTri();
+            quanTri.setNguoiDung(admin);
+            quanTri.setHoTen("Quản trị viên");
+            quanTri.setGhiChu("Admin hệ thống");
+            quanTriRepository.save(quanTri);
             
-            LoaiPhanHoi loai3 = new LoaiPhanHoi();
-            loai3.setTenLoai("Đề xuất");
-            loai3.setMoTa("Đề xuất cải tiến hoặc tính năng mới");
-            loai3.setTrangThai(true);
-            loaiPhanHoiRepository.save(loai3);
+            // Tạo Giảng viên
+            NguoiDung gv = new NguoiDung();
+            gv.setTenDangNhap("giangvien");
+            gv.setMatKhau(authService.hashPassword("gv123"));
+            gv.setVaiTro("giang_vien");
+            gv.setTrangThai(true);
+            gv = nguoiDungRepository.save(gv);
             
-            LoaiPhanHoi loai4 = new LoaiPhanHoi();
-            loai4.setTenLoai("Khen ngợi");
-            loai4.setMoTa("Ghi nhận những điểm tích cực của dịch vụ");
-            loai4.setTrangThai(true);
-            loaiPhanHoiRepository.save(loai4);
+            GiangVien giangVien = new GiangVien();
+            giangVien.setNguoiDung(gv);
+            giangVien.setHoTen("Nguyễn Văn A");
+            giangVien.setHocVi("Thạc sĩ");
+            giangVien.setKhoa(khoaCNTT);
+            giangVien.setSoNamKinhNghiem(5);
+            giangVienRepository.save(giangVien);
+            
+            // Tạo Người học
+            NguoiDung nh = new NguoiDung();
+            nh.setTenDangNhap("sinhvien");
+            nh.setMatKhau(authService.hashPassword("sv123"));
+            nh.setVaiTro("nguoi_hoc");
+            nh.setTrangThai(true);
+            nh = nguoiDungRepository.save(nh);
+            
+            NguoiHoc nguoiHoc = new NguoiHoc();
+            nguoiHoc.setNguoiDung(nh);
+            nguoiHoc.setGioiTinh(true);
+            nguoiHoc.setNamSinh(2003);
+            nguoiHoc.setKhoa(khoaCNTT);
+            nguoiHoc.setNganhHoc("Công nghệ Thông tin");
+            nguoiHoc.setKhoaHoc("K23");
+            nguoiHocRepository.save(nguoiHoc);
+        }
+        
+        // Tạo Nhóm Dịch vụ
+        if (nhomDichVuRepository.count() == 0) {
+            NhomDichVu dv1 = new NhomDichVu();
+            dv1.setTenDichVu("Giảng dạy");
+            dv1.setMoTa("Đánh giá về chất lượng giảng dạy");
+            nhomDichVuRepository.save(dv1);
+            
+            NhomDichVu dv2 = new NhomDichVu();
+            dv2.setTenDichVu("Chương trình đào tạo");
+            dv2.setMoTa("Đánh giá về chương trình đào tạo");
+            nhomDichVuRepository.save(dv2);
+            
+            NhomDichVu dv3 = new NhomDichVu();
+            dv3.setTenDichVu("Cơ sở vật chất");
+            dv3.setMoTa("Đánh giá về cơ sở vật chất");
+            nhomDichVuRepository.save(dv3);
+            
+            NhomDichVu dv4 = new NhomDichVu();
+            dv4.setTenDichVu("Hỗ trợ sinh viên");
+            dv4.setMoTa("Đánh giá về dịch vụ hỗ trợ sinh viên");
+            nhomDichVuRepository.save(dv4);
         }
     }
 }

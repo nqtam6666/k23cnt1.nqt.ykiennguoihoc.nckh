@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} ?: 'Hệ thống Phản hồi'">Hệ thống Phản hồi</title>
+    <link rel="icon" type="image/x-icon" th:href="@{/img/meo.ico}">
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/img/meo.ico}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="h-full bg-gray-50 dark:bg-gray-900">
+    <!-- Header Fragment -->
+    <div th:replace="~{fragments/header :: header}"></div>
+    
+    <!-- Sidebar Fragment (nếu có) -->
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    
+    <!-- Main Content -->
+    <div th:replace="~{::content}"></div>
+    
+    <!-- Footer Fragment -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>
+

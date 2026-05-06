@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <!-- Admin Sidebar Fragment -->
+    <th:block th:fragment="adminSidebar">
+        <aside class="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 bg-white dark:bg-gray-800 shadow-lg overflow-y-auto z-10">
+            <nav class="p-4 space-y-2">
+                <a href="/admin/dashboard" 
+                   th:classappend="${#httpServletRequest.requestURI == '/admin/dashboard' ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300' : ''}"
+                   class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-home mr-3"></i>
+                    <span>Dashboard</span>
+                </a>
+                
+                <a href="/admin/khao-sat" 
+                   th:classappend="${#strings.contains(#httpServletRequest.requestURI, '/admin/khao-sat') ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300' : ''}"
+                   class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-clipboard-list mr-3"></i>
+                    <span>Khảo sát</span>
+                </a>
+                
+                <a href="/admin/giang-vien" 
+                   th:classappend="${#strings.contains(#httpServletRequest.requestURI, '/admin/giang-vien') ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300' : ''}"
+                   class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-chalkboard-teacher mr-3"></i>
+                    <span>Giảng viên</span>
+                </a>
+                
+                <a href="/admin/hoc-phan" 
+                   th:classappend="${#strings.contains(#httpServletRequest.requestURI, '/admin/hoc-phan') ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300' : ''}"
+                   class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-book mr-3"></i>
+                    <span>Học phần</span>
+                </a>
+                
+                <a href="/admin/phan-cong" 
+                   th:classappend="${#strings.contains(#httpServletRequest.requestURI, '/admin/phan-cong') ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300' : ''}"
+                   class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-tasks mr-3"></i>
+                    <span>Phân công</span>
+                </a>
+                
+                <a href="/admin/phan-hoi" 
+                   th:classappend="${#strings.contains(#httpServletRequest.requestURI, '/admin/phan-hoi') ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300' : ''}"
+                   class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-comments mr-3"></i>
+                    <span>Phản hồi</span>
+                </a>
+                
+                <a href="/admin/nguoi-hoc" 
+                   th:classappend="${#strings.contains(#httpServletRequest.requestURI, '/admin/nguoi-hoc') ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300' : ''}"
+                   class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-user-graduate mr-3"></i>
+                    <span>Người học</span>
+                </a>
+            </nav>
+        </aside>
+    </th:block>
+</body>
+</html>
+

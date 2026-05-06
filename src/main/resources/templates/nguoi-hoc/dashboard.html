@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Người học</title>
+    <link rel="icon" type="image/x-icon" th:href="@{/img/meo.ico}">
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/img/meo.ico}">
+    <!-- Dark mode script must load first -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+            
+            window.toggleDarkMode = function() {
+                document.documentElement.classList.toggle('dark');
+                const isDark = document.documentElement.classList.contains('dark');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+<body class="h-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <!-- Navigation -->
+    <nav class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg shadow-lg sticky top-0 z-50 border-b border-gray-200/50 dark:border-gray-700/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 flex items-center justify-center shadow-lg">
+                            <i class="fas fa-user-graduate text-white text-lg"></i>
+                        </div>
+                        <span class="text-xl font-bold text-gray-800 dark:text-white ml-3">Người học</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="toggleDarkMode()" 
+                            class="p-2.5 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all">
+                        <i class="fas fa-moon dark:hidden text-lg"></i>
+                        <i class="fas fa-sun hidden dark:inline text-lg"></i>
+                    </button>
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" 
+                                class="flex items-center space-x-3 px-4 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-600 rounded-lg hover:from-blue-100 hover:to-indigo-100 dark:hover:from-gray-600 dark:hover:to-gray-500 transition-all cursor-pointer">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">
+                                <span th:text="${#strings.substring(nguoiDung?.tenDangNhap ?: 'U', 0, 1).toUpperCase()}"></span>
+                            </div>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200" th:text="${nguoiDung?.tenDangNhap ?: 'Người học'}"></span>
+                            <i class="fas fa-chevron-down text-xs text-gray-600 dark:text-gray-300"></i>
+                        </button>
+                        <div x-show="open" 
+                             @click.away="open = false"
+                             x-transition:enter="transition ease-out duration-100"
+                             x-transition:enter-start="transform opacity-0 scale-95"
+                             x-transition:enter-end="transform opacity-100 scale-100"
+                             x-transition:leave="transition ease-in duration-75"
+                             x-transition:leave-start="transform opacity-100 scale-100"
+                             x-transition:leave-end="transform opacity-0 scale-95"
+                             class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden z-50"
+                             style="display: none;">
+                            <a href="/nguoi-hoc/thong-tin" 
+                               class="flex items-center px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors">
+                                <i class="fas fa-user-edit mr-3 text-blue-500"></i>
+                                <span>Sửa thông tin</span>
+                            </a>
+                            <div class="border-t border-gray-200 dark:border-gray-700"></div>
+                            <a href="/nguoi-hoc/dashboard" 
+                               class="flex items-center px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors">
+                                <i class="fas fa-home mr-3 text-gray-500"></i>
+                                <span>Trang chủ</span>
+                            </a>
+                        </div>
+                    </div>
+                    <a href="/auth/logout" class="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all font-medium">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Đăng xuất
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Welcome Section -->
+        <div class="mb-8 animate-fade-in-up">
+            <div class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-2xl shadow-xl p-8 text-white relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full -mr-32 -mt-32"></div>
+                <div class="absolute bottom-0 left-0 w-48 h-48 bg-white opacity-10 rounded-full -ml-24 -mb-24"></div>
+                <div class="relative z-10">
+                    <h1 class="text-4xl font-bold mb-2">Chào mừng trở lại!</h1>
+                    <p class="text-blue-100 text-lg" th:text="${'Xin chào, ' + (nguoiDung?.tenDangNhap ?: 'Người học')}"></p>
+                    <div class="mt-4 flex items-center space-x-6">
+                        <div class="flex items-center space-x-6">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-graduation-cap text-2xl"></i>
+                                <div>
+                                    <p class="text-sm text-blue-100">Khoa</p>
+                                    <p class="font-semibold" th:text="${nguoiHoc?.khoa?.tenKhoa ?: 'Chưa cập nhật'}"></p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-book text-2xl"></i>
+                                <div>
+                                    <p class="text-sm text-blue-100">Ngành học</p>
+                                    <p class="font-semibold" th:text="${nguoiHoc?.nganhHoc ?: 'Chưa cập nhật'}"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="/nguoi-hoc/thong-tin" 
+                           class="px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-lg hover:bg-white/30 transition-all font-medium flex items-center">
+                            <i class="fas fa-edit mr-2"></i>Sửa thông tin
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50 p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Tổng khảo sát</p>
+                        <p class="text-3xl font-bold text-gray-900 dark:text-white" th:text="${danhSachKhaoSat != null ? danhSachKhaoSat.size() : 0}">0</p>
+                    </div>
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                        <i class="fas fa-clipboard-list text-white text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50 p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Đã hoàn thành</p>
+                            <p class="text-3xl font-bold text-green-600 dark:text-green-400" 
+                               th:text="${soLuongDaHoanThanh ?: 0}">0</p>
+                        </div>
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 flex items-center justify-center shadow-lg">
+                            <i class="fas fa-check-circle text-white text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50 p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Chưa hoàn thành</p>
+                            <p class="text-3xl font-bold text-orange-600 dark:text-orange-400"
+                               th:text="${soLuongChuaHoanThanh ?: 0}">0</p>
+                        </div>
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-r from-orange-500 to-red-600 flex items-center justify-center shadow-lg">
+                        <i class="fas fa-clock text-white text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Surveys Section -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-3xl font-bold text-gray-900 dark:text-white flex items-center">
+                    <i class="fas fa-tasks mr-3 text-blue-600 dark:text-blue-400"></i>
+                    Danh sách khảo sát
+                </h2>
+            </div>
+            
+            <div th:if="${danhSachKhaoSat != null and !danhSachKhaoSat.isEmpty()}" 
+                 class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div th:each="khaoSat, iterStat : ${danhSachKhaoSat}" 
+                     class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50 overflow-hidden card-hover animate-fade-in-up"
+                     th:style="${iterStat.count > 0 ? 'animation-delay: ' + (iterStat.count * 0.1) + 's' : ''}">
+                    
+                    <!-- Card Header with Gradient -->
+                    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white relative">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
+                        <div class="relative z-10">
+                            <div class="flex items-start justify-between mb-2">
+                                <h3 class="text-xl font-bold flex-1 pr-4" th:text="${khaoSat?.tenKhaoSat ?: 'Khảo sát'}"></h3>
+                                <span th:if="${trangThaiKhaoSat != null && trangThaiKhaoSat.get(khaoSat?.khaoSatId)}" 
+                                      class="flex-shrink-0 px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-semibold rounded-full flex items-center">
+                                    <i class="fas fa-check-circle mr-1"></i>Hoàn thành
+                                </span>
+                            </div>
+                            <div class="flex items-center space-x-4 text-sm text-blue-100 mt-3">
+                                <span><i class="fas fa-calendar-alt mr-1"></i><span th:text="${khaoSat?.hocKy ?: 'N/A'}"></span></span>
+                                <span><i class="fas fa-calendar mr-1"></i><span th:text="${khaoSat?.namHoc ?: 'N/A'}"></span></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Card Body -->
+                    <div class="p-6">
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                                    <i class="fas fa-info-circle mr-2 text-blue-500"></i>
+                                    <span th:if="${trangThaiKhaoSat == null || !trangThaiKhaoSat.get(khaoSat?.khaoSatId)}">
+                                        Khảo sát này đang chờ bạn thực hiện
+                                    </span>
+                                    <span th:if="${trangThaiKhaoSat != null && trangThaiKhaoSat.get(khaoSat?.khaoSatId)}">
+                                        Bạn đã hoàn thành khảo sát này
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        <a th:href="@{/nguoi-hoc/khao-sat/{id}(id=${khaoSat?.khaoSatId})}" 
+                           th:class="${trangThaiKhaoSat != null && trangThaiKhaoSat.get(khaoSat?.khaoSatId)} ? 
+                                      'w-full inline-flex items-center justify-center px-4 py-3 bg-gray-500 text-white rounded-xl hover:bg-gray-600 transition-all font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5' : 
+                                      'w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl hover:from-green-600 hover:to-emerald-700 transition-all font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'">
+                            <i class="fas fa-edit mr-2" th:if="${trangThaiKhaoSat == null || !trangThaiKhaoSat.get(khaoSat?.khaoSatId)}"></i>
+                            <i class="fas fa-eye mr-2" th:if="${trangThaiKhaoSat != null && trangThaiKhaoSat.get(khaoSat?.khaoSatId)}"></i>
+                            <span th:text="${trangThaiKhaoSat != null && trangThaiKhaoSat.get(khaoSat?.khaoSatId)} ? 'Xem lại' : 'Thực hiện khảo sát'"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div th:if="${danhSachKhaoSat == null or danhSachKhaoSat.isEmpty()}" 
+                 class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50 p-12 text-center">
+                <div class="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-r from-gray-300 to-gray-400 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center">
+                    <i class="fas fa-clipboard-list text-white text-4xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Chưa có khảo sát nào</h3>
+                <p class="text-gray-600 dark:text-gray-400">Hiện tại chưa có khảo sát nào được tạo. Vui lòng quay lại sau.</p>
+            </div>
+        </div>
+
+        <!-- History Section -->
+        <div th:if="${lichSuPhanHoi != null and !lichSuPhanHoi.isEmpty()}">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-3xl font-bold text-gray-900 dark:text-white flex items-center">
+                    <i class="fas fa-history mr-3 text-purple-600 dark:text-purple-400"></i>
+                    Lịch sử phản hồi
+                </h2>
+            </div>
+            
+            <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
+                <div class="divide-y divide-gray-200 dark:divide-gray-700">
+                    <div th:each="phanHoi, iterStat : ${lichSuPhanHoi}" 
+                         class="p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 flex items-center justify-center shadow-lg">
+                                <i class="fas fa-check text-white"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white" 
+                                        th:text="${phanHoi?.khaoSat?.tenKhaoSat ?: 'Khảo sát'}"></h3>
+                                    <span class="px-3 py-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs font-semibold rounded-full">
+                                        <i class="fas fa-check-circle mr-1"></i>Đã hoàn thành
+                                    </span>
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                                    <i class="fas fa-calendar-alt mr-2"></i>
+                                    <span th:text="${phanHoi?.thoiGianGui != null ? #temporals.format(phanHoi.thoiGianGui, 'dd/MM/yyyy HH:mm') : 'N/A'}"></span>
+                                </p>
+                                <p class="text-sm text-gray-500 dark:text-gray-500">
+                                    <i class="fas fa-info-circle mr-2"></i>
+                                    Học kỳ: <span class="font-semibold" th:text="${phanHoi?.khaoSat?.hocKy ?: 'N/A'}"></span> | 
+                                    Năm học: <span class="font-semibold" th:text="${phanHoi?.khaoSat?.namHoc ?: 'N/A'}"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

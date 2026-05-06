@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} + ' - Admin'">Admin - Hệ thống Phản hồi</title>
+    <link rel="icon" type="image/x-icon" th:href="@{/img/meo.ico}">
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/img/meo.ico}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="h-full bg-gray-50 dark:bg-gray-900">
+    <!-- Header -->
+    <div th:replace="~{fragments/header :: adminHeader(${backUrl}, ${pageTitle}, ${iconClass})}"></div>
+    
+    <div class="flex">
+        <!-- Sidebar -->
+        <div th:replace="~{fragments/sidebar :: adminSidebar}"></div>
+        
+        <!-- Main Content -->
+        <main class="flex-1 ml-64 mt-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- Flash Messages -->
+                <div th:replace="~{fragments/messages :: messages}"></div>
+                
+                <!-- Page Content -->
+                <div th:replace="~{::content}"></div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>
+

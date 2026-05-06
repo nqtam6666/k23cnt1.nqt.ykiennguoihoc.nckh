@@ -1,100 +1,66 @@
 package k23cnt1.nguyenquangtam.nckh.service;
 
-import k23cnt1.nguyenquangtam.nckh.dto.PhanHoiDTO;
-import k23cnt1.nguyenquangtam.nckh.entity.*;
-import k23cnt1.nguyenquangtam.nckh.repository.*;
+import k23cnt1.nguyenquangtam.nckh.entity.PhanHoi;
+import k23cnt1.nguyenquangtam.nckh.repository.ChiTietPhanHoiRepository;
+import k23cnt1.nguyenquangtam.nckh.repository.PhanHoiRepository;
+import k23cnt1.nguyenquangtam.nckh.util.PageInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class PhanHoiService {
     
     private final PhanHoiRepository phanHoiRepository;
-    private final NguoiHocRepository nguoiHocRepository;
-    private final DichVuDaoTaoRepository dichVuDaoTaoRepository;
-    private final LoaiPhanHoiRepository loaiPhanHoiRepository;
+    private final ChiTietPhanHoiRepository chiTietPhanHoiRepository;
     
-    @Transactional
-    public PhanHoi taoPhanHoi(PhanHoiDTO phanHoiDTO) {
-        // Tìm hoặc tạo người học
-        NguoiHoc nguoiHoc = nguoiHocRepository.findByMaSinhVien(phanHoiDTO.getMaSinhVien())
-                .orElseGet(() -> {
-                    NguoiHoc newNguoiHoc = new NguoiHoc();
-                    newNguoiHoc.setMaSinhVien(phanHoiDTO.getMaSinhVien());
-                    newNguoiHoc.setHoTen(phanHoiDTO.getHoTen());
-                    newNguoiHoc.setEmail(phanHoiDTO.getEmail());
-                    newNguoiHoc.setSoDienThoai(phanHoiDTO.getSoDienThoai());
-                    return nguoiHocRepository.save(newNguoiHoc);
-                });
-        
-        // Lấy dịch vụ đào tạo
-        DichVuDaoTao dichVuDaoTao = dichVuDaoTaoRepository.findById(phanHoiDTO.getDichVuDaoTaoId())
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy dịch vụ đào tạo"));
-        
-        // Lấy loại phản hồi
-        LoaiPhanHoi loaiPhanHoi = loaiPhanHoiRepository.findById(phanHoiDTO.getLoaiPhanHoiId())
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy loại phản hồi"));
-        
-        // Tạo phản hồi
-        PhanHoi phanHoi = new PhanHoi();
-        phanHoi.setNguoiHoc(nguoiHoc);
-        phanHoi.setDichVuDaoTao(dichVuDaoTao);
-        phanHoi.setLoaiPhanHoi(loaiPhanHoi);
-        phanHoi.setNoiDung(phanHoiDTO.getNoiDung());
-        phanHoi.setDiemDanhGia(phanHoiDTO.getDiemDanhGia());
-        phanHoi.setTrangThai(false); // Mặc định chờ duyệt
-        
-        return phanHoiRepository.save(phanHoi);
-    }
-    
+    @Transactional(readOnly = true)
     public List<PhanHoi> layTatCaPhanHoi() {
-        return phanHoiRepository.findAll();
+        return phanHoiRepository.findAllWithChiTiet();
     }
     
-    public List<PhanHoi> layPhanHoiTheoDichVu(Long dichVuId) {
-        return phanHoiRepository.findByDichVuDaoTaoId(dichVuId);
+    @Transactional(readOnly = true)
+    public PageInfo<PhanHoi> timKiemVaPhanTrang(String keyword, Long khaoSatId, int page, int size) {
+        String keywordNormalized = (keyword != null && !keyword.trim().isEmpty()) ? keyword.trim() : null;
+        Long khaoSatIdNormalized = (khaoSatId != null && khaoSatId > 0) ? khaoSatId : null;
+        
+        long total = phanHoiRepository.demTimKiemVaLoc(keywordNormalized, khaoSatIdNormalized);
+        List<PhanHoi> allResults = phanHoiRepository.timKiemVaLoc(keywordNormalized, khaoSatIdNormalized);
+        
+        int start = page * size;
+        int end = Math.min(start + size, allResults.size());
+        List<PhanHoi> pagedResults = (start < allResults.size()) ? allResults.subList(start, end) : java.util.Collections.emptyList();
+        
+        return PageInfo.of(pagedResults, page, size, total);
     }
     
-    public List<PhanHoi> layPhanHoiDaDuyet() {
-        return phanHoiRepository.findByTrangThai(true);
+    @Transactional(readOnly = true)
+    public List<PhanHoi> layPhanHoiTheoKhaoSat(Long khaoSatId) {
+        return phanHoiRepository.findByKhaoSat_KhaoSatIdWithChiTiet(khaoSatId);
     }
     
-    public List<PhanHoi> layPhanHoiChoDuyet() {
-        return phanHoiRepository.findByTrangThai(false);
+    @Transactional(readOnly = true)
+    public PhanHoi layPhanHoiTheoId(Long phanHoiId) {
+        return phanHoiRepository.findByIdWithChiTiet(phanHoiId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy phản hồi với ID: " + phanHoiId));
     }
     
     @Transactional
-    public PhanHoi duyetPhanHoi(Long id, String ghiChu) {
-        PhanHoi phanHoi = phanHoiRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy phản hồi"));
-        phanHoi.setTrangThai(true);
-        if (ghiChu != null && !ghiChu.isEmpty()) {
-            phanHoi.setGhiChu(ghiChu);
+    public void xoaPhanHoi(Long phanHoiId) {
+        // Load phản hồi cùng với chi tiết để tránh lazy loading exception
+        PhanHoi phanHoi = phanHoiRepository.findByIdWithChiTiet(phanHoiId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy phản hồi với ID: " + phanHoiId));
+        
+        // Xóa tất cả chi tiết phản hồi trước để tránh lỗi foreign key
+        if (phanHoi.getDanhSachChiTiet() != null && !phanHoi.getDanhSachChiTiet().isEmpty()) {
+            chiTietPhanHoiRepository.deleteAll(phanHoi.getDanhSachChiTiet());
+            chiTietPhanHoiRepository.flush(); // Đảm bảo xóa chi tiết trước
         }
-        return phanHoiRepository.save(phanHoi);
-    }
-    
-    @Transactional
-    public void xoaPhanHoi(Long id) {
-        phanHoiRepository.deleteById(id);
-    }
-    
-    public Double tinhDiemTrungBinhTheoDichVu(Long dichVuId) {
-        return phanHoiRepository.tinhDiemTrungBinhTheoDichVu(dichVuId);
-    }
-    
-    public Long demSoLuongPhanHoiTheoDichVu(Long dichVuId) {
-        return phanHoiRepository.demSoLuongPhanHoiTheoDichVu(dichVuId);
-    }
-    
-    public PhanHoi layPhanHoiTheoId(Long id) {
-        return phanHoiRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy phản hồi"));
+        
+        // Sau đó xóa phản hồi
+        phanHoiRepository.delete(phanHoi);
     }
 }
-

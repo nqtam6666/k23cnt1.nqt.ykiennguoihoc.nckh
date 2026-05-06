@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} + ' - Admin'">Admin - Hệ thống Phản hồi</title>
+    <link rel="icon" type="image/x-icon" th:href="@{/img/meo.ico}">
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/img/meo.ico}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Smooth transitions */
+        * {
+            transition-property: color, background-color, border-color, opacity, transform;
+            transition-duration: 200ms;
+            transition-timing-function: ease-in-out;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        
+        .dark ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+        
+        /* Glass morphism effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        .dark .glass {
+            background: rgba(30, 41, 59, 0.7);
+        }
+    </style>
+</head>
+<body class="h-full bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <!-- Sidebar -->
+    <aside class="fixed left-0 top-0 h-screen w-64 bg-white dark:bg-gray-800 shadow-xl z-50 border-r border-gray-200 dark:border-gray-700">
+        <div class="flex flex-col h-full">
+            
+            <!-- User Info -->
+            <div class="p-4 border-b border-gray-200 dark:border-gray-700" th:if="${nguoiDung}">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white font-semibold">
+                        <span th:text="${#strings.substring(nguoiDung?.tenDangNhap, 0, 1).toUpperCase()}">A</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-900 dark:text-white truncate" th:text="${nguoiDung?.tenDangNhap}">Admin</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Quản trị viên</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="flex-1 overflow-y-auto p-4 space-y-1">
+                <a href="/admin/dashboard" 
+                   th:classappend="${#strings.contains(#httpServletRequest.requestURI, '/admin/dashboard') && !#strings.contains(#httpServletRequest.requestURI, '/admin/') ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-700' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}"
+                   class="flex items-center px-4 py-3 rounded-lg border border-transparent transition-all duration-200 group">
+                    <i class="fas fa-home w-5 text-center mr-3"></i>
+                    <span class="font-medium">Dashboard</span>
+                </a>
+                
+                <a href="/admin/khao-sat" 
+                   th:classappend="${#strings.contains(#httpServletRequest.requestURI, '/admin/khao-sat') ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-700' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}"
+                   class="flex items-center px-4 py-3 rounded-lg border border-transparent transition-all duration-200 group">
+                    <i class="fas fa-clipboard-list w-5 text-center mr-3"></i>
+                    <span class="font-medium">Khảo sát</span>
+                </a>
+                
+                <a href="/admin/giang-vien" 
+                   th:classappend="${#strings.contains(#httpServletRequest.requestURI, '/admin/giang-vien') ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-700' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}"
+                   class="flex items-center px-4 py-3 rounded-lg border border-transparent transition-all duration-200 group">
+                    <i class="fas fa-chalkboard-teacher w-5 text-center mr-3"></i>
+                    <span class="font-medium">Giảng viên</span>
+                </a>
+                
+                <a href="/admin/nguoi-hoc" 
+                   th:classappend="${#strings.contains(#httpServletRequest.requestURI, '/admin/nguoi-hoc') ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-700' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}"
+                   class="flex items-center px-4 py-3 rounded-lg border border-transparent transition-all duration-200 group">
+                    <i class="fas fa-user-graduate w-5 text-center mr-3"></i>
+                    <span class="font-medium">Người học</span>
+                </a>
+                
+                <a href="/admin/hoc-phan" 
+                   th:classappend="${#strings.contains(#httpServletRequest.requestURI, '/admin/hoc-phan') ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-700' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}"
+                   class="flex items-center px-4 py-3 rounded-lg border border-transparent transition-all duration-200 group">
+                    <i class="fas fa-book w-5 text-center mr-3"></i>
+                    <span class="font-medium">Học phần</span>
+                </a>
+                
+                <a href="/admin/phan-cong" 
+                   th:classappend="${#strings.contains(#httpServletRequest.requestURI, '/admin/phan-cong') ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-700' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}"
+                   class="flex items-center px-4 py-3 rounded-lg border border-transparent transition-all duration-200 group">
+                    <i class="fas fa-tasks w-5 text-center mr-3"></i>
+                    <span class="font-medium">Phân công</span>
+                </a>
+                
+                <a href="/admin/phan-hoi" 
+                   th:classappend="${#strings.contains(#httpServletRequest.requestURI, '/admin/phan-hoi') ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-700' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}"
+                   class="flex items-center px-4 py-3 rounded-lg border border-transparent transition-all duration-200 group">
+                    <i class="fas fa-comments w-5 text-center mr-3"></i>
+                    <span class="font-medium">Phản hồi</span>
+                </a>
+            </nav>
+            
+            <!-- Logout -->
+            <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+                <a href="/auth/logout" class="flex items-center px-4 py-3 rounded-lg text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200">
+                    <i class="fas fa-sign-out-alt w-5 text-center mr-3"></i>
+                    <span class="font-medium">Đăng xuất</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <div class="ml-64">
+        <!-- Top Bar -->
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-b border-gray-200 dark:border-gray-700 shadow-sm">
+            <div class="px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900 dark:text-white" th:text="${pageTitle} ?: 'Dashboard'"></h1>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Quản lý hệ thống phản hồi</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <!-- Dark mode toggle (optional) -->
+                        <button onclick="document.documentElement.classList.toggle('dark')" 
+                                class="p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-moon dark:hidden"></i>
+                            <i class="fas fa-sun hidden dark:inline"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Page Content -->
+        <main class="p-6">
+            <!-- Flash Messages -->
+            <div th:replace="~{fragments/messages :: messages}"></div>
+            
+            <!-- Content -->
+            <div th:replace="~{::content}"></div>
+        </main>
+    </div>
+</body>
+</html>
+

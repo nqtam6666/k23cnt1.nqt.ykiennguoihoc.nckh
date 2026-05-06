@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết Phản hồi - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" th:href="@{/img/meo.ico}">
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/img/meo.ico}">
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+    <script src="/js/dark-mode.js"></script>
+    <style>
+        * { transition: all 0.2s ease-in-out; }
+    </style>
+</head>
+<body class="h-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/sidebar-v2 :: modernSidebar}"></div>
+    
+    <!-- Main Content -->
+    <div class="ml-64 min-h-screen">
+        <!-- Top Bar -->
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-b border-gray-200/50 dark:border-gray-700/50 shadow-sm">
+            <div class="px-8 py-5">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Chi tiết Phản hồi</h1>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Xem chi tiết phản hồi khảo sát</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <a href="/admin/phan-hoi" class="px-4 py-2 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all">
+                            <i class="fas fa-arrow-left mr-2"></i>Quay lại
+                        </a>
+                        <form th:action="@{/admin/phan-hoi/xoa/{id}(id=${phanHoi.phanHoiId})}" 
+                              method="post" 
+                              class="inline"
+                              onsubmit="return confirm('Bạn có chắc chắn muốn xóa phản hồi này? Tất cả chi tiết phản hồi sẽ bị xóa.');">
+                            <button type="submit" class="px-4 py-2 rounded-xl bg-red-600 text-white hover:bg-red-700 transition-all">
+                                <i class="fas fa-trash mr-2"></i>Xóa phản hồi
+                            </button>
+                        </form>
+                        <button onclick="toggleDarkMode()" 
+                                class="p-2.5 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all">
+                            <i class="fas fa-moon dark:hidden text-lg"></i>
+                            <i class="fas fa-sun hidden dark:inline text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Page Content -->
+        <main class="p-8">
+            <!-- Flash Messages -->
+            <div th:replace="~{fragments/messages :: messages}"></div>
+            
+            <div class="max-w-5xl mx-auto space-y-6">
+                <!-- Thông tin chung -->
+                <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
+                    <div class="bg-gradient-to-r from-purple-600 to-pink-600 p-6">
+                        <h2 class="text-2xl font-bold text-white flex items-center">
+                            <i class="fas fa-info-circle mr-3"></i>
+                            Thông tin chung
+                        </h2>
+                    </div>
+                    <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Người học</p>
+                            <p class="text-lg font-semibold text-gray-900 dark:text-white" th:text="${phanHoi.nguoiHoc?.nguoiDung?.tenDangNhap ?: 'N/A'}"></p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Khảo sát</p>
+                            <p class="text-lg font-semibold text-gray-900 dark:text-white" th:text="${phanHoi.khaoSat?.tenKhaoSat ?: 'N/A'}"></p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Thời gian gửi</p>
+                            <p class="text-lg font-semibold text-gray-900 dark:text-white" 
+                               th:text="${phanHoi.thoiGianGui != null ? #temporals.format(phanHoi.thoiGianGui, 'dd/MM/yyyy HH:mm') : 'N/A'}"></p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">Số câu trả lời</p>
+                            <p class="text-lg font-semibold text-gray-900 dark:text-white" th:text="${#lists.size(phanHoi.danhSachChiTiet ?: {})} + ' câu'"></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Chi tiết câu trả lời -->
+                <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6">
+                        <h2 class="text-2xl font-bold text-white flex items-center">
+                            <i class="fas fa-list-ul mr-3"></i>
+                            Chi tiết câu trả lời
+                        </h2>
+                    </div>
+                    <div class="p-6">
+                        <div th:if="${#lists.isEmpty(phanHoi.danhSachChiTiet)}" class="text-center py-12">
+                            <i class="fas fa-inbox text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
+                            <p class="text-gray-500 dark:text-gray-400">Chưa có câu trả lời nào</p>
+                        </div>
+                        <div th:unless="${#lists.isEmpty(phanHoi.danhSachChiTiet)}" class="space-y-4">
+                            <div th:each="chiTiet, iterStat : ${phanHoi.danhSachChiTiet}" 
+                                 class="border border-gray-200 dark:border-gray-700 rounded-xl p-6 hover:shadow-lg transition-all">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div class="flex-1">
+                                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                                            <span>Câu <span th:text="${iterStat.index + 1}"></span>: </span>
+                                            <span th:text="${chiTiet.cauHoi?.noiDung ?: 'N/A'}"></span>
+                                        </h3>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                                            <span>Nhóm dịch vụ: </span>
+                                            <span th:text="${chiTiet.cauHoi?.nhomDichVu?.tenDichVu ?: 'N/A'}"></span>
+                                        </p>
+                                    </div>
+                                    <div class="ml-4">
+                                        <span class="px-4 py-2 rounded-lg font-bold text-lg"
+                                              th:classappend="${chiTiet.diemDanhGia >= 5 ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' : 
+                                                               chiTiet.diemDanhGia == 4 ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300' :
+                                                               chiTiet.diemDanhGia == 3 ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' :
+                                                               chiTiet.diemDanhGia == 2 ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300' :
+                                                               'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'}"
+                                              th:switch="${chiTiet.cauHoi?.loaiThangDo}">
+                                            <!-- Likert 1-5 -->
+                                            <span th:case="'Likert 1-5'" th:text="${chiTiet.diemDanhGia + '/5'}"></span>
+                                            <!-- Likert 1-7 -->
+                                            <span th:case="'Likert 1-7'" th:text="${chiTiet.diemDanhGia + '/7'}"></span>
+                                            <!-- Yes/No -->
+                                            <span th:case="'Yes/No'"
+                                                  th:text="${chiTiet.diemDanhGia == 2 ? 'Có' : 'Không'}"></span>
+                                            <!-- Text (câu hỏi mở) -->
+                                            <span th:case="'Text'">Câu hỏi mở</span>
+                                            <!-- Mặc định: giữ /5 -->
+                                            <span th:case="*"
+                                                  th:text="${chiTiet.diemDanhGia + '/5'}"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div th:if="${chiTiet.yKienKhac != null && !#strings.isEmpty(chiTiet.yKienKhac)}" 
+                                     class="mt-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border-l-4 border-blue-500">
+                                    <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                                        <i class="fas fa-comment-dots mr-2"></i>Ý kiến khác:
+                                    </p>
+                                    <p class="text-gray-600 dark:text-gray-400 whitespace-pre-wrap" th:text="${chiTiet.yKienKhac}"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
+

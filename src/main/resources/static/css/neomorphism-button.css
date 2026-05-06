@@ -1,0 +1,169 @@
+/* Neomorphism Button Style */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Neomorphism Button - có thể dùng trong body hoặc container */
+.neo-section {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #e8ecf0;
+    padding: 60px 20px;
+}
+
+/* Dark mode support */
+.dark .neo-section {
+    background: #1f2937;
+}
+
+.dark .btn {
+    background: #374151;
+    color: #FF8B6B;
+    box-shadow: 
+        8px 8px 16px rgba(0, 0, 0, 0.3),
+        -8px -8px 16px rgba(75, 85, 99, 0.2);
+}
+
+.dark .btn:hover {
+    box-shadow: 
+        4px 4px 8px rgba(0, 0, 0, 0.3),
+        -4px -4px 8px rgba(75, 85, 99, 0.2);
+}
+
+.dark .btn:active {
+    box-shadow: 
+        inset 4px 4px 8px rgba(0, 0, 0, 0.4),
+        inset -4px -4px 8px rgba(75, 85, 99, 0.3);
+}
+
+.dark .cv-icon {
+    border-color: #FF8B6B;
+}
+
+.dark .cv-icon::before,
+.dark .cv-icon::after {
+    background: #FF8B6B;
+}
+
+.button-container {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 28px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #FF8B6B;
+    background: #e8ecf0;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+    
+    /* Neomorphism shadow */
+    box-shadow: 
+        8px 8px 16px rgba(163, 177, 198, 0.6),
+        -8px -8px 16px rgba(255, 255, 255, 0.9);
+}
+
+.btn:hover {
+    box-shadow: 
+        4px 4px 8px rgba(163, 177, 198, 0.6),
+        -4px -4px 8px rgba(255, 255, 255, 0.9);
+}
+
+.btn:active {
+    box-shadow: 
+        inset 4px 4px 8px rgba(163, 177, 198, 0.5),
+        inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+}
+
+/* Icon CV */
+.btn-icon {
+    width: 22px;
+    height: 22px;
+    display: inline-block;
+}
+
+.cv-icon {
+    width: 22px;
+    height: 22px;
+    border: 2px solid #FF8B6B;
+    border-radius: 3px;
+    position: relative;
+    transform: rotate(45deg);
+}
+
+.cv-icon::before,
+.cv-icon::after {
+    content: '';
+    position: absolute;
+    background: #FF8B6B;
+}
+
+.cv-icon::before {
+    width: 8px;
+    height: 2px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.cv-icon::after {
+    width: 2px;
+    height: 8px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .button-container {
+        flex-direction: column;
+        gap: 12px;
+    }
+    .btn {
+        width: 100%;
+        justify-content: center;
+        padding: 13px 25px;
+        font-size: 14px;
+    }
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.btn {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.btn:nth-child(2) {
+    animation-delay: 0.15s;
+    opacity: 0;
+}
+
+.btn:nth-child(1) {
+    opacity: 0;
+}
+

@@ -1,47 +1,44 @@
 package k23cnt1.nguyenquangtam.nckh.controller;
 
-import k23cnt1.nguyenquangtam.nckh.service.PhanHoiService;
+import jakarta.servlet.http.HttpSession;
+import k23cnt1.nguyenquangtam.nckh.entity.NguoiDung;
+import k23cnt1.nguyenquangtam.nckh.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/admin")
 @RequiredArgsConstructor
 public class AdminController {
     
+    private final KhaoSatService khaoSatService;
+    private final GiangVienService giangVienService;
+    private final HocPhanService hocPhanService;
+    private final PhanCongService phanCongService;
     private final PhanHoiService phanHoiService;
+    private final NguoiDungService nguoiDungService;
     
-    @GetMapping("/phan-hoi/cho-duyet")
-    public String danhSachPhanHoiChoDuyet(Model model) {
-        model.addAttribute("danhSachPhanHoi", phanHoiService.layPhanHoiChoDuyet());
-        return "admin/phan-hoi-cho-duyet";
+    // Redirect từ /admin/nguoi-hoc sang /admin/nguoi-dung
+    @GetMapping("/nguoi-hoc")
+    public String redirectNguoiHoc() {
+        return "redirect:/admin/nguoi-dung";
     }
     
-    @PostMapping("/phan-hoi/{id}/duyet")
-    public String duyetPhanHoi(@PathVariable Long id, 
-                               @RequestParam(required = false) String ghiChu,
-                               RedirectAttributes redirectAttributes) {
-        try {
-            phanHoiService.duyetPhanHoi(id, ghiChu);
-            redirectAttributes.addFlashAttribute("success", "Duyệt phản hồi thành công!");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra: " + e.getMessage());
-        }
-        return "redirect:/admin/phan-hoi/cho-duyet";
-    }
-    
-    @PostMapping("/phan-hoi/{id}/xoa")
-    public String xoaPhanHoi(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        try {
-            phanHoiService.xoaPhanHoi(id);
-            redirectAttributes.addFlashAttribute("success", "Xóa phản hồi thành công!");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra: " + e.getMessage());
-        }
-        return "redirect:/admin/phan-hoi/cho-duyet";
+    @GetMapping("/dashboard")
+    public String dashboard(HttpSession session, Model model) {
+        NguoiDung nguoiDung = (NguoiDung) session.getAttribute("nguoiDung");
+        if (nguoiDung == null) return "redirect:/auth/login";
+        
+        model.addAttribute("nguoiDung", nguoiDung);
+        model.addAttribute("soLuongKhaoSat", khaoSatService.layTatCaKhaoSat().size());
+        model.addAttribute("soLuongGiangVien", giangVienService.layTatCaGiangVien().size());
+        model.addAttribute("soLuongHocPhan", hocPhanService.layTatCaHocPhan().size());
+        model.addAttribute("soLuongPhanCong", phanCongService.layTatCaPhanCong().size());
+        model.addAttribute("soLuongPhanHoi", phanHoiService.layTatCaPhanHoi().size());
+        model.addAttribute("soLuongNguoiDung", nguoiDungService.layTatCaNguoiDung().size());
+        return "admin/dashboard";
     }
 }
-

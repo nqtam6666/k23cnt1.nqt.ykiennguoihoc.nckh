@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -17,44 +16,30 @@ public class NguoiHoc {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "nguoi_hoc_id")
+    private Long nguoiHocId;
     
-    @Column(nullable = false, unique = true, length = 50)
-    private String maSinhVien;
+    @OneToOne
+    @JoinColumn(name = "nguoi_dung_id", nullable = false, unique = true)
+    private NguoiDung nguoiDung;
     
-    @Column(nullable = false, length = 100)
-    private String hoTen;
+    @Column(name = "gioi_tinh")
+    private Boolean gioiTinh; // true: nam, false: nữ
     
-    @Column(length = 100)
-    private String email;
+    @Column(name = "nam_sinh")
+    private Integer namSinh;
     
-    @Column(length = 15)
-    private String soDienThoai;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "khoa_id", nullable = false)
+    private Khoa khoa;
     
-    @Column(length = 50)
-    private String lop;
+    @Column(name = "nganh_hoc", length = 100)
+    private String nganhHoc;
     
-    @Column(length = 50)
-    private String khoa;
-    
-    @Column(name = "ngay_tao")
-    private LocalDateTime ngayTao;
-    
-    @Column(name = "ngay_cap_nhat")
-    private LocalDateTime ngayCapNhat;
+    @Column(name = "khoa_hoc", length = 50)
+    private String khoaHoc;
     
     @OneToMany(mappedBy = "nguoiHoc", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PhanHoi> danhSachPhanHoi;
-    
-    @PrePersist
-    protected void onCreate() {
-        ngayTao = LocalDateTime.now();
-        ngayCapNhat = LocalDateTime.now();
-    }
-    
-    @PreUpdate
-    protected void onUpdate() {
-        ngayCapNhat = LocalDateTime.now();
-    }
 }
 

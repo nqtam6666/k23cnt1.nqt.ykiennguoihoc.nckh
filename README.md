@@ -50,6 +50,15 @@ cd k23cnt1.nqt.ykiennguoihoc.nckh
 
 2. **Cấu hình Database**
 - Tạo database: `NCKH_FeedBack_NguoiHoc_db`
+  ```sql
+  CREATE DATABASE NCKH_FeedBack_NguoiHoc_db
+    CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+  ```
+- **(Tùy chọn)** Tạo bảng thủ công bằng schema SQL:
+  ```bash
+  mysql -u root -p NCKH_FeedBack_NguoiHoc_db < sql/schema.sql
+  ```
+  Nếu dùng JPA với `ddl-auto=update` (mặc định), ứng dụng sẽ tự tạo/cập nhật bảng khi chạy; file `sql/schema.sql` dùng để tham khảo hoặc khởi tạo DB tay.
 - Cập nhật thông tin kết nối trong `src/main/resources/application.properties`:
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3308/NCKH_FeedBack_NguoiHoc_db?useUnicode=true&characterEncoding=utf8&useSSL=false
@@ -120,11 +129,21 @@ src/
 
 ## 🗄️ Database Schema
 
+Schema SQL đầy đủ: **`sql/schema.sql`** (MySQL, utf8mb4).
+
 ### Các bảng chính:
-- `nguoi_hoc`: Thông tin người học
-- `dich_vu_dao_tao`: Dịch vụ đào tạo
-- `loai_phan_hoi`: Loại phản hồi (Góp ý, Khiếu nại, Đề xuất, Khen ngợi)
-- `phan_hoi`: Phản hồi của người học
+- `nguoi_dung`: Tài khoản đăng nhập (admin, giang_vien, nguoi_hoc)
+- `khoa`: Khoa
+- `nhom_dich_vu`: Nhóm dịch vụ đào tạo
+- `nguoi_hoc`: Thông tin người học (liên kết `nguoi_dung`, `khoa`)
+- `giang_vien`: Giảng viên (liên kết `nguoi_dung`, `khoa`)
+- `quan_tri`: Quản trị (liên kết `nguoi_dung`)
+- `hoc_phan`: Học phần (liên kết `khoa`)
+- `phan_cong`: Phân công giảng viên – học phần
+- `khao_sat`: Khảo sát
+- `cau_hoi`: Câu hỏi khảo sát (liên kết `khao_sat`, `nhom_dich_vu`)
+- `phan_hoi`: Phản hồi của người học (liên kết `nguoi_hoc`, `khao_sat`)
+- `chi_tiet_phan_hoi`: Chi tiết phản hồi từng câu hỏi (liên kết `phan_hoi`, `cau_hoi`)
 
 ## 🎨 Giao diện
 

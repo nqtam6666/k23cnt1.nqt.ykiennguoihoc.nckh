@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${nguoiDungDTO.nguoiDungId != null ? 'Sửa Người dùng' : 'Thêm Người dùng'}">Thêm Người dùng - Admin</title>
+    <link rel="icon" type="image/x-icon" th:href="@{/img/meo.ico}">
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/img/meo.ico}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+    <script src="/js/dark-mode.js"></script>
+    <style>
+        * { transition: all 0.2s ease-in-out; }
+        .form-input:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+    </style>
+</head>
+<body class="h-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/sidebar-v2 :: modernSidebar}"></div>
+    
+    <!-- Main Content -->
+    <div class="ml-64 min-h-screen">
+        <!-- Top Bar -->
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-b border-gray-200/50 dark:border-gray-700/50 shadow-sm">
+            <div class="px-8 py-5">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent" th:text="${nguoiDungDTO.nguoiDungId != null ? 'Sửa Người dùng' : 'Thêm Người dùng'}"></h1>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Thông tin người dùng</p>
+                    </div>
+                    <a href="/admin/nguoi-dung" class="px-4 py-2 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all">
+                        <i class="fas fa-arrow-left mr-2"></i>Quay lại
+                    </a>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Page Content -->
+        <main class="p-8">
+            <!-- Flash Messages -->
+            <div th:replace="~{fragments/messages :: messages}"></div>
+            
+            <!-- Form Card -->
+            <div class="max-w-3xl mx-auto">
+                <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 p-8">
+                    <form th:action="${nguoiDungDTO.nguoiDungId != null ? '/admin/nguoi-dung/sua/' + nguoiDungDTO.nguoiDungId : '/admin/nguoi-dung/them'}" 
+                          th:object="${nguoiDungDTO}" 
+                          method="post" 
+                          class="space-y-6">
+                        
+                        <div th:if="${nguoiDungDTO.nguoiDungId != null}">
+                            <input type="hidden" th:field="*{nguoiDungId}">
+                        </div>
+                        
+                        <div>
+                            <label for="tenDangNhap" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                <i class="fas fa-user mr-2 text-blue-500"></i>Tên đăng nhập <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" 
+                                   id="tenDangNhap" 
+                                   th:field="*{tenDangNhap}"
+                                   class="form-input w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                   placeholder="Nhập tên đăng nhập"
+                                   th:readonly="${nguoiDungDTO.nguoiDungId != null}"
+                                   th:classappend="${#fields.hasErrors('tenDangNhap')} ? 'border-red-500'">
+                            <p th:if="${#fields.hasErrors('tenDangNhap')}" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                <span th:errors="*{tenDangNhap}"></span>
+                            </p>
+                        </div>
+                        
+                        <div th:if="${nguoiDungDTO.nguoiDungId == null}">
+                            <label for="matKhau" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                <i class="fas fa-lock mr-2 text-blue-500"></i>Mật khẩu <span class="text-red-500">*</span>
+                            </label>
+                            <input type="password" 
+                                   id="matKhau" 
+                                   th:field="*{matKhau}"
+                                   autocomplete="new-password"
+                                   class="form-input w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                   placeholder="Nhập mật khẩu"
+                                   th:classappend="${#fields.hasErrors('matKhau')} ? 'border-red-500'">
+                            <p th:if="${#fields.hasErrors('matKhau')}" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                <span th:errors="*{matKhau}"></span>
+                            </p>
+                        </div>
+                        
+                        <div th:if="${nguoiDungDTO.nguoiDungId != null}">
+                            <label for="matKhau" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                <i class="fas fa-lock mr-2 text-blue-500"></i>Mật khẩu mới (để trống nếu không đổi)
+                            </label>
+                            <input type="password" 
+                                   id="matKhau" 
+                                   name="matKhau"
+                                   autocomplete="new-password"
+                                   class="form-input w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                   placeholder="Nhập mật khẩu mới">
+                        </div>
+                        
+                        <div>
+                            <label for="vaiTro" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                <i class="fas fa-user-tag mr-2 text-blue-500"></i>Vai trò <span class="text-red-500">*</span>
+                            </label>
+                            <select id="vaiTro" 
+                                    th:field="*{vaiTro}"
+                                    class="form-input w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                    th:classappend="${#fields.hasErrors('vaiTro')} ? 'border-red-500'">
+                                <option value="">-- Chọn vai trò --</option>
+                                <option value="admin">Admin</option>
+                                <option value="giang_vien">Giảng viên</option>
+                                <option value="nguoi_hoc">Người học</option>
+                            </select>
+                            <p th:if="${#fields.hasErrors('vaiTro')}" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                <span th:errors="*{vaiTro}"></span>
+                            </p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                <i class="fas fa-toggle-on mr-2 text-blue-500"></i>Trạng thái <span class="text-red-500">*</span>
+                            </label>
+                            <div class="flex space-x-4">
+                                <label class="flex items-center p-3 rounded-xl border-2 border-gray-300 dark:border-gray-600 hover:border-green-500 dark:hover:border-green-500 cursor-pointer transition-all" 
+                                       th:classappend="${nguoiDungDTO?.trangThai == true} ? 'border-green-500 bg-green-50 dark:bg-green-900/20' : ''">
+                                    <input type="radio" 
+                                           th:field="*{trangThai}" 
+                                           th:value="true"
+                                           class="mr-2">
+                                    <span class="text-gray-700 dark:text-gray-300 font-medium">Hoạt động</span>
+                                </label>
+                                <label class="flex items-center p-3 rounded-xl border-2 border-gray-300 dark:border-gray-600 hover:border-gray-500 dark:hover:border-gray-500 cursor-pointer transition-all"
+                                       th:classappend="${nguoiDungDTO?.trangThai == false} ? 'border-gray-500 bg-gray-50 dark:bg-gray-900/20' : ''">
+                                    <input type="radio" 
+                                           th:field="*{trangThai}" 
+                                           th:value="false"
+                                           class="mr-2">
+                                    <span class="text-gray-700 dark:text-gray-300 font-medium">Khóa</span>
+                                </label>
+                            </div>
+                            <p th:if="${#fields.hasErrors('trangThai')}" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                <span th:errors="*{trangThai}"></span>
+                            </p>
+                        </div>
+                        
+                        <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+                            <a href="/admin/nguoi-dung" 
+                               class="px-6 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 font-medium transition-all">
+                                <i class="fas fa-times mr-2"></i>Hủy
+                            </a>
+                            <button type="submit" 
+                                    class="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all font-medium">
+                                <i class="fas fa-save mr-2"></i>Lưu
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
+
