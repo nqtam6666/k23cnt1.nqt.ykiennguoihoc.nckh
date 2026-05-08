@@ -1,17 +1,31 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-    <!-- Flash Messages Fragment -->
     <th:block th:fragment="messages">
-        <div th:if="${success}" class="mb-4 p-4 bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-300 rounded-lg">
-            <i class="fas fa-check-circle mr-2"></i>
-            <span th:text="${success}"></span>
+        <!-- Success Toast -->
+        <div th:if="${successMessage}" class="toast toast-success" id="toast-success">
+            <i class="fas fa-check-circle toast-icon"></i>
+            <span th:text="${successMessage}"></span>
+            <button class="toast-close" onclick="this.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
-        <div th:if="${error}" class="mb-4 p-4 bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 rounded-lg">
-            <i class="fas fa-exclamation-circle mr-2"></i>
-            <span th:text="${error}"></span>
+
+        <!-- Error Toast -->
+        <div th:if="${errorMessage}" class="toast toast-error" id="toast-error">
+            <i class="fas fa-exclamation-circle toast-icon"></i>
+            <span th:text="${errorMessage}"></span>
+            <button class="toast-close" onclick="this.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
+
+        <script th:inline="javascript">
+            // Auto-dismiss toasts after 5s
+            document.querySelectorAll('.toast').forEach(t => {
+                setTimeout(() => { if(t) t.remove(); }, 5000);
+            });
+        </script>
     </th:block>
 </body>
 </html>
-

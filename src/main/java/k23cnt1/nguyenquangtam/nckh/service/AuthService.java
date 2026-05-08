@@ -1,67 +1,41 @@
 package k23cnt1.nguyenquangtam.nckh.service;
 
 import k23cnt1.nguyenquangtam.nckh.entity.NguoiDung;
+import k23cnt1.nguyenquangtam.nckh.entity.VaiTro;
 import k23cnt1.nguyenquangtam.nckh.repository.NguoiDungRepository;
+import k23cnt1.nguyenquangtam.nckh.repository.VaiTroRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
     
     private final NguoiDungRepository nguoiDungRepository;
+    private final VaiTroRepository vaiTroRepository;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     
-    public Optional<NguoiDung> authenticate(String tenDangNhap, String matKhau) {
-        Optional<NguoiDung> nguoiDung = nguoiDungRepository.findByTenDangNhapAndTrangThai(tenDangNhap, true);
-        
-        if (nguoiDung.isPresent()) {
-            // BCrypt tự động so sánh password với hash đã lưu
-            if (passwordEncoder.matches(matKhau, nguoiDung.get().getMatKhau())) {
-                return nguoiDung;
-            }
-        }
-        
-        return Optional.empty();
-    }
-    
     public String hashPassword(String password) {
-        // BCrypt tự động tạo salt và hash password
         return passwordEncoder.encode(password);
     }
     
-    public boolean hasRole(NguoiDung nguoiDung, String role) {
-        return nguoiDung.getVaiTro().equals(role);
-    }
-    
-    public boolean isAdmin(NguoiDung nguoiDung) {
-        return hasRole(nguoiDung, "admin");
-    }
-    
-    public boolean isGiangVien(NguoiDung nguoiDung) {
-        return hasRole(nguoiDung, "giang_vien");
-    }
-    
-    public boolean isNguoiHoc(NguoiDung nguoiDung) {
-        return hasRole(nguoiDung, "nguoi_hoc");
-    }
-    
-    @org.springframework.transaction.annotation.Transactional
+    @Transactional
     public NguoiDung dangKy(String tenDangNhap, String matKhau) {
-        // Kiểm tra tên đăng nhập đã tồn tại chưa
         if (nguoiDungRepository.existsByTenDangNhap(tenDangNhap)) {
             throw new RuntimeException("Tên đăng nhập đã tồn tại");
         }
         
-        // Tạo người dùng mới với vai trò mặc định là nguoi_hoc
         NguoiDung nguoiDung = new NguoiDung();
         nguoiDung.setTenDangNhap(tenDangNhap);
         nguoiDung.setMatKhau(hashPassword(matKhau));
-        nguoiDung.setVaiTro("nguoi_hoc"); // Mặc định là sinh viên
-        nguoiDung.setTrangThai(true); // Mặc định là hoạt động
+        nguoiDung.setTrangThai(true);
+        
+        // Gán vai trò mặc định ROLE_NGUOI_HOC
+        VaiTro vaiTroNguoiHoc = vaiTroRepository.findByTenVaiTro("ROLE_NGUOI_HOC")
+            .orElseThrow(() -> new RuntimeException("Lỗi cấu hình: Không tìm thấy vai trò người học."));
+        nguoiDung.getDanhSachVaiTro().add(vaiTroNguoiHoc);
         
         return nguoiDungRepository.save(nguoiDung);
     }

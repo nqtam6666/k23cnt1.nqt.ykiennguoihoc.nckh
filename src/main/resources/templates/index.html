@@ -1,215 +1,299 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="vi" class="h-full">
+<html xmlns:th="http://www.thymeleaf.org" lang="vi" class="h-full scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hệ thống Phản hồi - Trường Đại học Nguyễn Trãi</title>
+    <meta name="description" content="Nền tảng lắng nghe ý kiến sinh viên, cải tiến chất lượng đào tạo tại Trường Đại học Nguyễn Trãi.">
     <link rel="icon" type="image/x-icon" th:href="@{/img/meo.ico}">
-    <link rel="shortcut icon" type="image/x-icon" th:href="@{/img/meo.ico}">
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
                         primary: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0ea5e9',
-                            600: '#0284c7',
-                            700: '#0369a1',
+                            50:'#eef2ff',100:'#e0e7ff',200:'#c7d2fe',300:'#a5b4fc',
+                            400:'#818cf8',500:'#6366f1',600:'#4f46e5',700:'#4338ca',
+                            800:'#3730a3',900:'#312e81',950:'#1e1b4b'
                         }
                     }
                 }
             }
         }
     </script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/neomorphism-button.css}">
+
+    <!-- Design System -->
+    <link rel="stylesheet" th:href="@{/css/design-system.css}">
+
     <style>
-        /* Neomorphism section background */
-        .neo-section {
-            background: #e8ecf0;
-            padding: 60px 20px;
+        .hero-mesh {
+            background:
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99,102,241,0.15), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 50%, rgba(124,58,237,0.1), transparent),
+                radial-gradient(ellipse 50% 50% at 20% 80%, rgba(16,185,129,0.08), transparent);
         }
-        .dark .neo-section {
-            background: #1f2937;
+        .dark .hero-mesh {
+            background:
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99,102,241,0.2), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 50%, rgba(124,58,237,0.12), transparent),
+                radial-gradient(ellipse 50% 50% at 20% 80%, rgba(16,185,129,0.06), transparent);
         }
+        .service-icon-1 { color: #6366f1; background: linear-gradient(135deg, #eef2ff, #e0e7ff); }
+        .service-icon-2 { color: #8b5cf6; background: linear-gradient(135deg, #f5f3ff, #ede9fe); }
+        .service-icon-3 { color: #06b6d4; background: linear-gradient(135deg, #ecfeff, #cffafe); }
+        .service-icon-4 { color: #10b981; background: linear-gradient(135deg, #ecfdf5, #d1fae5); }
+        .dark .service-icon-1 { color:#818cf8; background: rgba(99,102,241,0.15); }
+        .dark .service-icon-2 { color:#a78bfa; background: rgba(139,92,246,0.15); }
+        .dark .service-icon-3 { color:#22d3ee; background: rgba(6,182,212,0.15); }
+        .dark .service-icon-4 { color:#34d399; background: rgba(16,185,129,0.15); }
     </style>
 </head>
-<body class="h-full bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+<body class="h-full bg-slate-50 dark:bg-[#0f172a] text-gray-800 dark:text-gray-200 font-sans overflow-x-hidden transition-colors duration-300">
+
     <!-- Navigation -->
-    <nav class="bg-white dark:bg-gray-800 shadow-lg sticky top-0 z-50 transition-colors duration-300">
+    <nav class="glass-nav fixed w-full top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center">
-                    <a href="/" class="flex items-center space-x-2 text-xl font-bold text-gray-800 dark:text-white">
-                        <i class="fas fa-graduation-cap text-primary-600 dark:text-primary-400"></i>
-                        <span>Đại học Nguyễn Trãi</span>
+            <div class="flex justify-between items-center h-[4.5rem]">
+                <!-- Brand -->
+                <a href="/" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-purple-600 flex items-center justify-center text-white shadow-lg group-hover:shadow-primary-500/40 transition-all duration-300">
+                        <i class="fas fa-graduation-cap text-lg"></i>
+                    </div>
+                    <span class="text-xl font-extrabold tracking-tight text-gradient">NTU Feedback</span>
+                </a>
+
+                <!-- Desktop Nav -->
+                <div class="hidden md:flex items-center gap-1">
+                    <a href="/" class="px-4 py-2 rounded-lg text-sm font-semibold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/30">Trang chủ</a>
+                    <a href="/phan-hoi/form" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">Gửi phản hồi</a>
+                    <a href="/phan-hoi/danh-sach" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">Danh sách</a>
+                    <div class="w-px h-6 bg-gray-200 dark:bg-gray-700 mx-1"></div>
+                    <a href="/admin/dashboard" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-user-shield mr-1"></i>Admin
                     </a>
-                </div>
-                <div class="hidden md:flex items-center space-x-4">
-                    <a href="/" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                        Trang chủ
-                    </a>
-                    <a href="/phan-hoi/form" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                        Gửi phản hồi
-                    </a>
-                    <a href="/phan-hoi/danh-sach" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                        Danh sách phản hồi
-                    </a>
-                    <a href="/thong-ke" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                        Thống kê
-                    </a>
-                    <button id="theme-toggle" class="p-2 rounded-full text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                    <button id="theme-toggle" class="ml-1 w-10 h-10 rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                         <i class="fas fa-moon dark:hidden"></i>
-                        <i class="fas fa-sun hidden dark:inline"></i>
+                        <i class="fas fa-sun hidden dark:inline text-yellow-400"></i>
                     </button>
                 </div>
-                <!-- Mobile menu button -->
-                <div class="md:hidden flex items-center space-x-2">
-                    <button id="theme-toggle" class="p-2 rounded-full text-gray-700 dark:text-gray-200">
+
+                <!-- Mobile -->
+                <div class="md:hidden flex items-center gap-2">
+                    <button id="theme-toggle-mobile" class="p-2 rounded-full text-gray-500 dark:text-gray-400">
                         <i class="fas fa-moon dark:hidden"></i>
-                        <i class="fas fa-sun hidden dark:inline"></i>
+                        <i class="fas fa-sun hidden dark:inline text-yellow-400"></i>
                     </button>
-                    <button id="mobile-menu-button" class="p-2 rounded-md text-gray-700 dark:text-gray-200">
-                        <i class="fas fa-bars"></i>
+                    <button id="mobile-menu-button" class="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                        <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
             </div>
         </div>
         <!-- Mobile menu -->
-        <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200 dark:border-gray-700">
-            <div class="px-2 pt-2 pb-3 space-y-1">
-                <a href="/" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                    Trang chủ
-                </a>
-                <a href="/phan-hoi/form" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                    Gửi phản hồi
-                </a>
-                <a href="/phan-hoi/danh-sach" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                    Danh sách phản hồi
-                </a>
-                <a href="/thong-ke" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                    Thống kê
-                </a>
+        <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-[#0f172a]">
+            <div class="px-4 py-4 space-y-2">
+                <a href="/" class="block px-4 py-3 rounded-lg text-base font-medium bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400">Trang chủ</a>
+                <a href="/phan-hoi/form" class="block px-4 py-3 rounded-lg text-base font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">Gửi phản hồi</a>
+                <a href="/phan-hoi/danh-sach" class="block px-4 py-3 rounded-lg text-base font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800">Danh sách</a>
+                <a href="/admin/dashboard" class="block px-4 py-3 rounded-lg text-base font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"><i class="fas fa-user-shield mr-2"></i>Quản trị</a>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <div class="bg-gradient-to-br from-primary-600 to-purple-600 text-white py-16 sm:py-24">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold mb-6">
-                <i class="fas fa-comments mr-3"></i>
-                Hệ thống Phản hồi
+    <section class="relative min-h-screen flex items-center justify-center hero-mesh overflow-hidden pt-20">
+        <!-- Floating Blobs -->
+        <div class="absolute top-1/4 left-1/4 w-80 h-80 bg-purple-300/50 dark:bg-purple-900/30 rounded-full filter blur-3xl animate-blob"></div>
+        <div class="absolute top-1/3 right-1/4 w-96 h-96 bg-indigo-300/40 dark:bg-indigo-900/30 rounded-full filter blur-3xl animate-blob" style="animation-delay:2s"></div>
+        <div class="absolute bottom-1/4 left-1/2 w-72 h-72 bg-emerald-200/40 dark:bg-emerald-900/20 rounded-full filter blur-3xl animate-blob" style="animation-delay:4s"></div>
+
+        <div class="relative z-10 max-w-5xl mx-auto px-4 text-center" data-aos="zoom-in" data-aos-duration="800">
+            <!-- Status Badge -->
+            <div class="inline-flex items-center px-4 py-2 rounded-full bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border border-gray-200/60 dark:border-gray-700/60 mb-8 shadow-sm">
+                <span class="flex w-2 h-2 rounded-full bg-emerald-500 mr-2.5 animate-pulse"></span>
+                <span class="text-sm font-medium text-gray-600 dark:text-gray-300">Hệ thống Lấy ý kiến Phản hồi Người học</span>
+            </div>
+
+            <h1 class="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.1] mb-6">
+                <span class="block text-gray-900 dark:text-white">Đồng hành cùng</span>
+                <span class="text-gradient">Chất lượng Đào tạo</span>
             </h1>
-            <p class="text-xl sm:text-2xl mb-8 text-primary-100">
-                Lấy ý kiến phản hồi của người học về dịch vụ đào tạo
+
+            <p class="mt-6 max-w-2xl mx-auto text-lg sm:text-xl text-gray-600 dark:text-gray-400 leading-relaxed">
+                Nền tảng lắng nghe ý kiến sinh viên, giúp cải tiến liên tục dịch vụ học thuật và cơ sở vật chất tại
+                <strong class="text-gray-900 dark:text-white">Trường Đại học Nguyễn Trãi</strong>.
             </p>
-            <a href="/phan-hoi/form" class="inline-flex items-center px-6 py-3 bg-white text-primary-600 rounded-lg font-semibold hover:bg-primary-50 transition-all transform hover:scale-105 shadow-lg">
-                <i class="fas fa-paper-plane mr-2"></i>
-                Gửi phản hồi ngay
-            </a>
+
+            <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
+                <a href="/phan-hoi/form" class="btn btn-lg btn-primary animate-pulse-glow">
+                    <i class="fas fa-paper-plane"></i> Bắt đầu Đánh giá
+                </a>
+                <a href="#services" class="btn btn-lg btn-outline">
+                    <i class="fas fa-arrow-down"></i> Tìm hiểu thêm
+                </a>
+            </div>
+
+            <!-- Stats Row -->
+            <div class="mt-16 grid grid-cols-3 gap-6 max-w-lg mx-auto" data-aos="fade-up" data-aos-delay="300">
+                <div class="text-center">
+                    <div class="text-3xl font-black text-gradient" th:text="${tongKhaoSat != null ? tongKhaoSat : '—'}">—</div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Khảo sát</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-black text-gradient" th:text="${tongPhanHoi != null ? tongPhanHoi : '—'}">—</div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Phản hồi</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-black text-gradient" th:text="${tongGiangVien != null ? tongGiangVien : '—'}">—</div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Giảng viên</div>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
 
     <!-- Services Section -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h2 class="text-3xl font-bold text-center mb-12 text-gray-800 dark:text-white">
-            Dịch vụ Đào tạo
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div th:each="dichVu : ${danhSachDichVu}" 
-                 class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 p-6 border border-gray-200 dark:border-gray-700">
-                <div class="flex items-center mb-4">
-                    <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center mr-4">
-                        <i class="fas fa-book text-primary-600 dark:text-primary-400 text-xl"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold text-gray-800 dark:text-white" th:text="${dichVu.tenDichVu}">
-                        Tên dịch vụ
-                    </h3>
-                </div>
-                <p class="text-gray-600 dark:text-gray-300 mb-4" th:text="${dichVu.moTa}">
-                    Mô tả dịch vụ
+    <section id="services" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <span class="inline-block px-4 py-1.5 rounded-full text-sm font-semibold bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 mb-4">Danh mục</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+                    Lĩnh vực Đánh giá
+                </h2>
+                <p class="mt-4 max-w-2xl mx-auto text-gray-500 dark:text-gray-400">
+                    Chọn lĩnh vực bạn muốn đóng góp ý kiến để chúng tôi cải thiện hơn
                 </p>
-                <a th:href="@{/phan-hoi/form}" 
-                   class="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
-                    <i class="fas fa-comment mr-2"></i>
-                    Phản hồi
-                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div th:each="dichVu, iterStat : ${danhSachDichVu}"
+                     class="glass-card rounded-2xl p-7 group cursor-pointer"
+                     th:attr="data-aos='fade-up', data-aos-delay=${iterStat.index * 100}">
+                    <div class="relative z-10">
+                        <div th:classappend="${'service-icon-' + ((iterStat.index % 4) + 1)}"
+                             class="w-14 h-14 rounded-xl flex items-center justify-center mb-5 text-xl shadow-sm">
+                            <i th:class="${iterStat.index == 0 ? 'fas fa-chalkboard-teacher' : (iterStat.index == 1 ? 'fas fa-book-open' : (iterStat.index == 2 ? 'fas fa-building' : 'fas fa-headset'))}"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2" th:text="${dichVu.tenDichVu}">Dịch vụ</h3>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm mb-5 line-clamp-2 leading-relaxed" th:text="${dichVu.moTa}">Mô tả</p>
+                        <a th:href="@{/phan-hoi/form(dichVuId=${dichVu.dichVuId})}"
+                           class="inline-flex items-center text-sm font-semibold text-primary-600 dark:text-primary-400 group-hover:gap-3 gap-2 transition-all">
+                            Phản hồi ngay <i class="fas fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 
     <!-- Features Section -->
-    <div class="bg-gray-100 dark:bg-gray-800 py-12 mt-12">
+    <section class="py-24 bg-white/60 dark:bg-slate-800/30 border-y border-gray-100 dark:border-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                <div class="p-6">
-                    <div class="w-16 h-16 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-shield-alt text-primary-600 dark:text-primary-400 text-2xl"></i>
-                    </div>
-                    <h4 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Bảo mật thông tin</h4>
-                    <p class="text-gray-600 dark:text-gray-300">Thông tin của bạn được bảo mật tuyệt đối</p>
-                </div>
-                <div class="p-6">
-                    <div class="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-clock text-green-600 dark:text-green-400 text-2xl"></i>
-                    </div>
-                    <h4 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Phản hồi nhanh</h4>
-                    <p class="text-gray-600 dark:text-gray-300">Gửi phản hồi dễ dàng và nhanh chóng</p>
-                </div>
-                <div class="p-6">
-                    <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-chart-line text-blue-600 dark:text-blue-400 text-2xl"></i>
-                    </div>
-                    <h4 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Cải thiện liên tục</h4>
-                    <p class="text-gray-600 dark:text-gray-300">Ý kiến của bạn giúp cải thiện dịch vụ</p>
-                </div>
+            <div class="text-center mb-16" data-aos="fade-up">
+                <span class="inline-block px-4 py-1.5 rounded-full text-sm font-semibold bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 mb-4">Tại sao chọn chúng tôi</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+                    Cam kết Chất lượng
+                </h2>
             </div>
-        </div>
-    </div>
 
-    <!-- Neomorphism Button Section -->
-    <div class="neo-section">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold text-center mb-8 text-gray-800 dark:text-white">
-                Tải CV của tôi
-            </h2>
-            <div class="button-container">
-                <button class="btn" type="button" onclick="window.open('#', '_blank')">
-                    <span class="btn-icon">
-                        <span class="cv-icon"></span>
-                    </span>
-                    <span>Tải CV của tôi</span>
-                </button>
-                
-                <a href="/phan-hoi/form" class="btn">
-                    <span class="btn-icon">
-                        <span class="cv-icon"></span>
-                    </span>
-                    <span>Gửi phản hồi</span>
-                </a>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center p-8 rounded-2xl hover:bg-white dark:hover:bg-slate-800 transition-colors" data-aos="zoom-in">
+                    <div class="w-16 h-16 mx-auto rounded-2xl bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center mb-5">
+                        <i class="fas fa-shield-alt text-indigo-600 dark:text-indigo-400 text-2xl"></i>
+                    </div>
+                    <h4 class="text-lg font-bold mb-3 text-gray-900 dark:text-white">Bảo mật & Ẩn danh</h4>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Danh tính người phản hồi được bảo mật tuyệt đối, giúp bạn thoải mái đóng góp ý kiến.</p>
+                </div>
+                <div class="text-center p-8 rounded-2xl hover:bg-white dark:hover:bg-slate-800 transition-colors" data-aos="zoom-in" data-aos-delay="150">
+                    <div class="w-16 h-16 mx-auto rounded-2xl bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center mb-5">
+                        <i class="fas fa-bolt text-violet-600 dark:text-violet-400 text-2xl"></i>
+                    </div>
+                    <h4 class="text-lg font-bold mb-3 text-gray-900 dark:text-white">Xử lý Nhanh chóng</h4>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Phân luồng trực tiếp đến phòng ban liên quan để giải quyết kịp thời mọi vấn đề.</p>
+                </div>
+                <div class="text-center p-8 rounded-2xl hover:bg-white dark:hover:bg-slate-800 transition-colors" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="w-16 h-16 mx-auto rounded-2xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mb-5">
+                        <i class="fas fa-chart-line text-emerald-600 dark:text-emerald-400 text-2xl"></i>
+                    </div>
+                    <h4 class="text-lg font-bold mb-3 text-gray-900 dark:text-white">Cải tiến Liên tục</h4>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Mọi ý kiến đều được ghi nhận làm cơ sở nâng cao chất lượng môi trường giáo dục.</p>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 dark:bg-gray-900 text-white py-8 mt-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p>&copy; 2025 Trường Đại học Nguyễn Trãi. Nghiên cứu Khoa học - K23CNT1</p>
-            <p class="mt-2 text-gray-400">Nguyễn Quang Tâm</p>
+    <footer class="bg-white dark:bg-slate-900 border-t border-gray-100 dark:border-gray-800 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                <div class="md:col-span-2">
+                    <a href="/" class="flex items-center gap-3 mb-4">
+                        <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-primary-500 to-purple-600 flex items-center justify-center text-white">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <span class="text-lg font-extrabold text-gradient">NTU Feedback</span>
+                    </a>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm max-w-sm leading-relaxed">
+                        Hệ thống lấy ý kiến phản hồi từ người học, phục vụ nâng cao chất lượng đào tạo tại Trường Đại học Nguyễn Trãi.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-4 uppercase tracking-wider">Liên kết</h4>
+                    <ul class="space-y-2.5 text-sm text-gray-500 dark:text-gray-400">
+                        <li><a href="/" class="hover:text-primary-500 transition-colors">Trang chủ</a></li>
+                        <li><a href="/phan-hoi/form" class="hover:text-primary-500 transition-colors">Gửi ý kiến</a></li>
+                        <li><a href="/phan-hoi/danh-sach" class="hover:text-primary-500 transition-colors">Danh sách phản hồi</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-4 uppercase tracking-wider">Dự án NCKH</h4>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                        Thực hiện bởi: <strong>Nguyễn Quang Tâm</strong> và <strong>Nguyễn Văn Thịnh</strong><br>
+                        Lớp: <strong>K23CNT1</strong><br>
+                        Trường Đại học Nguyễn Trãi
+                    </p>
+                </div>
+            </div>
+            <div class="border-t border-gray-100 dark:border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400 dark:text-gray-500">
+                <p>&copy; 2026 Trường Đại học Nguyễn Trãi. All rights reserved.</p>
+                <button onclick="window.scrollTo({top:0,behavior:'smooth'})" class="mt-4 md:mt-0 w-10 h-10 rounded-full border border-gray-200 dark:border-gray-700 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <i class="fas fa-arrow-up text-xs"></i>
+                </button>
+            </div>
         </div>
     </footer>
 
-    <script th:src="@{/js/dark-mode.js}"></script>
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // Mobile menu toggle
-        document.getElementById('mobile-menu-button')?.addEventListener('click', function() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
+        AOS.init({ once: true, offset: 50, duration: 700, easing: 'ease-out-cubic' });
+
+        // Dark mode
+        const themeToggles = document.querySelectorAll('#theme-toggle, #theme-toggle-mobile');
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+        themeToggles.forEach(t => t.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('color-theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        }));
+
+        // Mobile menu
+        document.getElementById('mobile-menu-button')?.addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
         });
     </script>
 </body>

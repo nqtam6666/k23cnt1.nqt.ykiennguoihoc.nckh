@@ -25,9 +25,13 @@ public class NguoiDung {
     @Column(name = "mat_khau", nullable = false, length = 255)
     private String matKhau;
     
-    @Column(name = "vai_tro", nullable = false, length = 20)
-    private String vaiTro; // admin, giang_vien, nguoi_hoc
-    
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "nguoi_dung_vai_tro",
+        joinColumns = @JoinColumn(name = "nguoi_dung_id"),
+        inverseJoinColumns = @JoinColumn(name = "vai_tro_id")
+    )
+    private java.util.Set<VaiTro> danhSachVaiTro = new java.util.HashSet<>();
     @Column(name = "trang_thai", nullable = false)
     private Boolean trangThai = true; // true: hoạt động, false: khóa
     
@@ -37,6 +41,14 @@ public class NguoiDung {
     @PrePersist
     protected void onCreate() {
         ngayTao = LocalDateTime.now();
+    }
+    
+    public String getVaiTro() {
+        if (danhSachVaiTro == null || danhSachVaiTro.isEmpty()) return "nguoi_hoc";
+        String role = danhSachVaiTro.iterator().next().getTenVaiTro();
+        if ("ROLE_ADMIN".equals(role)) return "admin";
+        if ("ROLE_GIANG_VIEN".equals(role)) return "giang_vien";
+        return "nguoi_hoc";
     }
 }
 

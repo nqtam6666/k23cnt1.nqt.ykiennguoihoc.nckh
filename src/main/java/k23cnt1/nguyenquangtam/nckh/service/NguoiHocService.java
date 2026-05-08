@@ -8,6 +8,8 @@ import k23cnt1.nguyenquangtam.nckh.entity.NguoiHoc;
 import k23cnt1.nguyenquangtam.nckh.repository.KhoaRepository;
 import k23cnt1.nguyenquangtam.nckh.repository.NguoiDungRepository;
 import k23cnt1.nguyenquangtam.nckh.repository.NguoiHocRepository;
+import k23cnt1.nguyenquangtam.nckh.repository.VaiTroRepository;
+import k23cnt1.nguyenquangtam.nckh.entity.VaiTro;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,7 @@ public class NguoiHocService {
     private final NguoiDungRepository nguoiDungRepository;
     private final KhoaRepository khoaRepository;
     private final AuthService authService;
+    private final VaiTroRepository vaiTroRepository;
     
     public List<NguoiHoc> layTatCaNguoiHoc() {
         return nguoiHocRepository.findAll(Sort.by(Sort.Direction.ASC, "nguoiHocId"));
@@ -45,7 +48,9 @@ public class NguoiHocService {
         NguoiDung nguoiDung = new NguoiDung();
         nguoiDung.setTenDangNhap(dto.getTenDangNhap());
         nguoiDung.setMatKhau(authService.hashPassword(dto.getMatKhau()));
-        nguoiDung.setVaiTro("nguoi_hoc");
+        VaiTro vaiTro = vaiTroRepository.findByTenVaiTro("ROLE_NGUOI_HOC")
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy vai trò người học."));
+        nguoiDung.getDanhSachVaiTro().add(vaiTro);
         nguoiDung.setTrangThai(true);
         nguoiDung = nguoiDungRepository.save(nguoiDung);
         

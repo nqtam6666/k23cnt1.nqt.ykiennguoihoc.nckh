@@ -11,18 +11,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
     
     @GetMapping("/")
-    public String trangChu(HttpSession session) {
-        NguoiDung nguoiDung = (NguoiDung) session.getAttribute("nguoiDung");
-        
-        if (nguoiDung == null) {
+    public String trangChu(org.springframework.security.core.Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
             return "redirect:/auth/login";
         }
         
         // Redirect theo vai trò
-        String vaiTro = nguoiDung.getVaiTro();
-        if ("admin".equals(vaiTro)) {
+        if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
             return "redirect:/admin/dashboard";
-        } else if ("giang_vien".equals(vaiTro)) {
+        } else if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_GIANG_VIEN"))) {
             return "redirect:/giang-vien/dashboard";
         } else {
             return "redirect:/nguoi-hoc/dashboard";

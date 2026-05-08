@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="vi" class="h-full">
 <head>
     <meta charset="UTF-8">
@@ -8,6 +8,7 @@
     <link rel="shortcut icon" type="image/x-icon" th:href="@{/img/meo.ico}">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/design-system.css}">
     <script>
         tailwind.config = { darkMode: 'class' }
     </script>
@@ -24,7 +25,7 @@
     <div th:replace="~{fragments/sidebar-v2 :: modernSidebar}"></div>
     
     <!-- Main Content -->
-    <div class="ml-64 min-h-screen">
+    <div class="page-content min-h-screen">
         <!-- Top Bar -->
         <header class="sticky top-0 z-40 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-b border-gray-200/50 dark:border-gray-700/50 shadow-sm">
             <div class="px-8 py-5">

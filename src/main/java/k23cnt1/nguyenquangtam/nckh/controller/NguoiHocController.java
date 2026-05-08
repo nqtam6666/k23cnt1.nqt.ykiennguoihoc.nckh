@@ -102,7 +102,7 @@ public class NguoiHocController {
         Optional<NguoiHoc> nguoiHocOpt = nguoiHocRepository.findByNguoiDung_NguoiDungId(nguoiDung.getNguoiDungId());
         if (nguoiHocOpt.isEmpty()) {
             // Tự động tạo NguoiHoc nếu user có vai trò nguoi_hoc nhưng chưa có record
-            if ("nguoi_hoc".equals(nguoiDung.getVaiTro())) {
+            if (nguoiDung.getDanhSachVaiTro().stream().anyMatch(v -> "ROLE_NGUOI_HOC".equals(v.getTenVaiTro()))) {
                 System.out.println("DEBUG: Auto-creating NguoiHoc for user: " + nguoiDung.getTenDangNhap());
                 nguoiHocOpt = Optional.of(nguoiHocService.taoNguoiHocTuDong(nguoiDung));
             } else {
@@ -326,7 +326,7 @@ public class NguoiHocController {
         Optional<NguoiHoc> nguoiHocOpt = nguoiHocRepository.findByNguoiDung_NguoiDungId(nguoiDung.getNguoiDungId());
         if (nguoiHocOpt.isEmpty()) {
             // Tự động tạo NguoiHoc nếu user có vai trò nguoi_hoc nhưng chưa có record
-            if ("nguoi_hoc".equals(nguoiDung.getVaiTro())) {
+            if (nguoiDung.getDanhSachVaiTro().stream().anyMatch(v -> "ROLE_NGUOI_HOC".equals(v.getTenVaiTro()))) {
                 nguoiHocOpt = Optional.of(nguoiHocService.taoNguoiHocTuDong(nguoiDung));
             } else {
                 redirectAttributes.addFlashAttribute("error", "Không tìm thấy thông tin người học");

@@ -2,7 +2,7 @@
 
 ## Trường Đại học Nguyễn Trãi
 **Nghiên cứu Khoa học - K23CNT1**  
-**Sinh viên: Nguyễn Quang Tâm**
+**Sinh viên: Nguyễn Quang Tâm, Nguyễn Văn Thịnh**
 
 ---
 
@@ -158,7 +158,7 @@ Dự án nghiên cứu khoa học - Trường Đại học Nguyễn Trãi
 
 ## 👤 Tác giả
 
-**Nguyễn Quang Tâm**  
+**Nguyễn Quang Tâm, Nguyễn Văn Thịnh**  
 - Lớp: K23CNT1
 - Trường: Đại học Nguyễn Trãi
 

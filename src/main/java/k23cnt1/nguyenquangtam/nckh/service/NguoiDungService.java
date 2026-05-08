@@ -11,11 +11,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import k23cnt1.nguyenquangtam.nckh.repository.VaiTroRepository;
+
 @Service
 @RequiredArgsConstructor
 public class NguoiDungService {
     
     private final NguoiDungRepository nguoiDungRepository;
+    private final VaiTroRepository vaiTroRepository;
     private final AuthService authService;
     
     public List<NguoiDung> layTatCaNguoiDung() {
@@ -27,6 +30,9 @@ public class NguoiDungService {
         // Chuẩn hóa parameters
         String keywordNormalized = (keyword != null && !keyword.trim().isEmpty()) ? keyword.trim() : null;
         String vaiTroNormalized = (vaiTro != null && !vaiTro.trim().isEmpty() && !vaiTro.equals("all")) ? vaiTro.trim() : null;
+        if (vaiTroNormalized != null) {
+            vaiTroNormalized = mapToRoleName(vaiTroNormalized);
+        }
         Boolean trangThaiNormalized = trangThai != null ? trangThai : null;
         
         // Lấy tổng số records
@@ -58,7 +64,12 @@ public class NguoiDungService {
         NguoiDung nguoiDung = new NguoiDung();
         nguoiDung.setTenDangNhap(dto.getTenDangNhap());
         nguoiDung.setMatKhau(authService.hashPassword(dto.getMatKhau()));
-        nguoiDung.setVaiTro(dto.getVaiTro());
+        if (dto.getVaiTro() != null && !dto.getVaiTro().isEmpty()) {
+            String roleName = mapToRoleName(dto.getVaiTro());
+            k23cnt1.nguyenquangtam.nckh.entity.VaiTro vt = vaiTroRepository.findByTenVaiTro(roleName)
+                .orElseThrow(() -> new RuntimeException("Vai trò không hợp lệ: " + roleName));
+            nguoiDung.getDanhSachVaiTro().add(vt);
+        }
         nguoiDung.setTrangThai(dto.getTrangThai());
         
         return nguoiDungRepository.save(nguoiDung);
@@ -69,7 +80,14 @@ public class NguoiDungService {
         NguoiDung nguoiDung = nguoiDungRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
         
-        nguoiDung.setVaiTro(dto.getVaiTro());
+        if (dto.getVaiTro() != null && !dto.getVaiTro().isEmpty()) {
+            String roleName = mapToRoleName(dto.getVaiTro());
+            k23cnt1.nguyenquangtam.nckh.entity.VaiTro vt = vaiTroRepository.findByTenVaiTro(roleName)
+                .orElseThrow(() -> new RuntimeException("Vai trò không hợp lệ: " + roleName));
+            nguoiDung.getDanhSachVaiTro().clear();
+            nguoiDung.getDanhSachVaiTro().add(vt);
+        }
+        
         nguoiDung.setTrangThai(dto.getTrangThai());
         
         // Cập nhật mật khẩu nếu có
@@ -121,7 +139,12 @@ public class NguoiDungService {
                 NguoiDung nguoiDung = new NguoiDung();
                 nguoiDung.setTenDangNhap(tenDangNhap);
                 nguoiDung.setMatKhau(matKhauHash);
-                nguoiDung.setVaiTro(vaiTro != null && !vaiTro.isEmpty() ? vaiTro : "nguoi_hoc");
+                String vaiTroStr = vaiTro != null && !vaiTro.isEmpty() ? vaiTro : "nguoi_hoc";
+                String roleName = mapToRoleName(vaiTroStr);
+                k23cnt1.nguyenquangtam.nckh.entity.VaiTro vt = vaiTroRepository.findByTenVaiTro(roleName)
+                    .orElseThrow(() -> new RuntimeException("Vai trò không hợp lệ: " + roleName));
+                nguoiDung.getDanhSachVaiTro().add(vt);
+                
                 nguoiDung.setTrangThai(true);
                 
                 nguoiDungRepository.save(nguoiDung);
@@ -139,6 +162,12 @@ public class NguoiDungService {
         ketQua.put("loiList", loiList);
         
         return ketQua;
+    }
+    
+    private String mapToRoleName(String frontendRole) {
+        if ("admin".equalsIgnoreCase(frontendRole) || "ROLE_ADMIN".equalsIgnoreCase(frontendRole)) return "ROLE_ADMIN";
+        if ("giang_vien".equalsIgnoreCase(frontendRole) || "ROLE_GIANG_VIEN".equalsIgnoreCase(frontendRole)) return "ROLE_GIANG_VIEN";
+        return "ROLE_NGUOI_HOC";
     }
 }
 

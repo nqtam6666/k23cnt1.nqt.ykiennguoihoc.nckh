@@ -3,94 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập - Hệ thống Phản hồi</title>
+    <title>Đăng nhập - Hệ thống Phản hồi NTU</title>
     <link rel="icon" type="image/x-icon" th:href="@{/img/meo.ico}">
-    <link rel="shortcut icon" type="image/x-icon" th:href="@{/img/meo.ico}">
-    <!-- Dark mode script must load first -->
-    <script src="/js/dark-mode.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { darkMode: 'class' }</script>
     <script>
-        tailwind.config = { darkMode: 'class' }
+        (function(){
+            if(localStorage.getItem('theme')==='dark'||(!localStorage.getItem('theme')&&window.matchMedia('(prefers-color-scheme:dark)').matches)){
+                document.documentElement.classList.add('dark');
+            }
+            window.toggleDarkMode=function(){
+                document.documentElement.classList.toggle('dark');
+                localStorage.setItem('theme',document.documentElement.classList.contains('dark')?'dark':'light');
+            };
+        })();
     </script>
+    <link rel="stylesheet" th:href="@{/css/design-system.css}">
 </head>
-<body class="h-full flex items-center justify-center p-4 relative" 
-      style="background-image: url('/img/325479295_1542156529615912_8399569358052823118_n - Copy.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
-    <!-- Overlay để làm tối nền và tăng độ tương phản -->
-    <div class="absolute inset-0 bg-black/40 dark:bg-black/60"></div>
-    
-    <div class="relative z-10 bg-white/95 dark:bg-gray-800/95 backdrop-blur-lg rounded-lg shadow-2xl w-full max-w-md p-8">
-        <!-- Dark Mode Toggle Button -->
-        <div class="absolute top-4 right-4">
-            <button onclick="toggleDarkMode()" 
-                    class="p-2.5 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
-                <i class="fas fa-moon dark:hidden text-lg"></i>
-                <i class="fas fa-sun hidden dark:inline text-lg"></i>
-            </button>
-        </div>
-        
-        <div class="text-center mb-8">
-            <i class="fas fa-graduation-cap text-4xl text-blue-600 dark:text-blue-400 mb-4"></i>
-            <h1 class="text-3xl font-bold text-gray-800 dark:text-white">Đăng nhập</h1>
-            <p class="text-gray-600 dark:text-gray-400 mt-2">Hệ thống Phản hồi - Đại học Nguyễn Trãi</p>
-        </div>
-        
-        <div th:if="${error}" class="mb-4 p-4 bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 rounded-lg">
-            <i class="fas fa-exclamation-circle mr-2"></i>
-            <span th:text="${error}"></span>
-        </div>
-        
-        <form th:action="@{/auth/login}" th:object="${loginDTO}" method="post" class="space-y-6">
-            <div>
-                <label for="tenDangNhap" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    <i class="fas fa-user mr-2"></i>Tên đăng nhập
-                </label>
-                <input type="text" 
-                       id="tenDangNhap" 
-                       th:field="*{tenDangNhap}"
-                       class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                       placeholder="Nhập tên đăng nhập"
-                       th:classappend="${#fields.hasErrors('tenDangNhap')} ? 'border-red-500'">
-                <p th:if="${#fields.hasErrors('tenDangNhap')}" class="mt-1 text-sm text-red-600 dark:text-red-400">
-                    <span th:errors="*{tenDangNhap}"></span>
+<body class="h-full bg-slate-50 dark:bg-[#0f172a] font-[Inter]">
+    <div class="min-h-full flex">
+        <!-- Left Panel — Brand / Illustration -->
+        <div class="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-violet-700">
+            <!-- Decorative circles -->
+            <div class="absolute -top-20 -left-20 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-32 -right-32 w-[30rem] h-[30rem] bg-white/5 rounded-full blur-3xl"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 border border-white/10 rounded-full"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 border border-white/5 rounded-full"></div>
+
+            <div class="relative z-10 flex flex-col items-center justify-center w-full p-16 text-center text-white">
+                <div class="w-20 h-20 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center mb-8 shadow-2xl">
+                    <i class="fas fa-graduation-cap text-4xl"></i>
+                </div>
+                <h2 class="text-4xl font-extrabold tracking-tight mb-4">NTU Feedback</h2>
+                <p class="text-lg text-white/80 max-w-sm leading-relaxed">
+                    Hệ thống lấy ý kiến phản hồi người học — Trường Đại học Nguyễn Trãi
                 </p>
+                <div class="mt-12 flex items-center gap-3 text-sm text-white/60">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>Dự án NCKH — K23CNT1</span>
+                </div>
             </div>
-            
-            <div>
-                <label for="matKhau" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    <i class="fas fa-lock mr-2"></i>Mật khẩu
-                </label>
-                <input type="password" 
-                       id="matKhau" 
-                       th:field="*{matKhau}"
-                       class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                       placeholder="Nhập mật khẩu"
-                       th:classappend="${#fields.hasErrors('matKhau')} ? 'border-red-500'">
-                <p th:if="${#fields.hasErrors('matKhau')}" class="mt-1 text-sm text-red-600 dark:text-red-400">
-                    <span th:errors="*{matKhau}"></span>
-                </p>
-            </div>
-            
-            <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center">
-                <i class="fas fa-sign-in-alt mr-2"></i>
-                Đăng nhập
-            </button>
-        </form>
-        
-        <div class="mt-6 text-center">
-            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                Chưa có tài khoản? 
-                <a href="/auth/register" class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold">
-                    <i class="fas fa-user-plus mr-1"></i>Đăng ký ngay
-                </a>
-            </p>
         </div>
-        
-        <div class="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
-            <p>Hệ thống Nghiên cứu Khoa học - K23CNT1</p>
-            <p class="mt-1">Nguyễn Quang Tâm</p>
+
+        <!-- Right Panel — Login Form -->
+        <div class="flex-1 flex items-center justify-center p-6 sm:p-12">
+            <div class="w-full max-w-md">
+                <!-- Dark mode toggle -->
+                <div class="flex justify-end mb-8">
+                    <button onclick="toggleDarkMode()"
+                            class="w-10 h-10 rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:inline text-yellow-400"></i>
+                    </button>
+                </div>
+
+                <!-- Mobile brand -->
+                <div class="lg:hidden flex items-center gap-3 mb-8">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-lg">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <span class="text-xl font-extrabold text-gradient">NTU Feedback</span>
+                </div>
+
+                <div class="mb-8">
+                    <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Đăng nhập</h1>
+                    <p class="text-gray-500 dark:text-gray-400 mt-2">Chào mừng bạn trở lại! Vui lòng nhập thông tin.</p>
+                </div>
+
+                <!-- Error message -->
+                <div th:if="${error}" class="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 flex items-center gap-3">
+                    <i class="fas fa-exclamation-circle text-red-500 text-lg flex-shrink-0"></i>
+                    <span class="text-sm text-red-700 dark:text-red-300 font-medium" th:text="${error}"></span>
+                </div>
+
+                <form th:action="@{/auth/login}" th:object="${loginDTO}" method="post" class="space-y-5">
+                    <!-- Username -->
+                    <div class="float-label">
+                        <input type="text" id="tenDangNhap" th:field="*{tenDangNhap}" placeholder=" " autocomplete="username"
+                               th:classappend="${#fields.hasErrors('tenDangNhap')} ? 'error'">
+                        <label for="tenDangNhap"><i class="fas fa-user mr-1.5 text-xs"></i>Tên đăng nhập</label>
+                        <p th:if="${#fields.hasErrors('tenDangNhap')}" class="mt-1.5 text-xs text-red-500" th:errors="*{tenDangNhap}"></p>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="float-label relative">
+                        <input type="password" id="matKhau" th:field="*{matKhau}" placeholder=" " autocomplete="current-password"
+                               th:classappend="${#fields.hasErrors('matKhau')} ? 'error'">
+                        <label for="matKhau"><i class="fas fa-lock mr-1.5 text-xs"></i>Mật khẩu</label>
+                        <button type="button" onclick="togglePassword()" class="absolute right-3 top-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                            <i id="eye-icon" class="fas fa-eye"></i>
+                        </button>
+                        <p th:if="${#fields.hasErrors('matKhau')}" class="mt-1.5 text-xs text-red-500" th:errors="*{matKhau}"></p>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-full">
+                        <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                    </button>
+                </form>
+
+                <div class="mt-8 text-center">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        Chưa có tài khoản?
+                        <a href="/auth/register" class="font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
+                            Đăng ký ngay <i class="fas fa-arrow-right text-xs ml-0.5"></i>
+                        </a>
+                    </p>
+                </div>
+
+                <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 text-center text-xs text-gray-400 dark:text-gray-500">
+                    <p>NCKH — K23CNT1 · Nguyễn Quang Tâm & Nguyễn Văn Thịnh</p>
+                </div>
+            </div>
         </div>
     </div>
+
+    <script>
+        function togglePassword() {
+            const inp = document.getElementById('matKhau');
+            const icon = document.getElementById('eye-icon');
+            if (inp.type === 'password') {
+                inp.type = 'text'; icon.className = 'fas fa-eye-slash';
+            } else {
+                inp.type = 'password'; icon.className = 'fas fa-eye';
+            }
+        }
+    </script>
 </body>
 </html>
-

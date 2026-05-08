@@ -30,42 +30,6 @@ public class AuthController {
         return "auth/login";
     }
     
-    @PostMapping("/login")
-    public String login(@Valid LoginDTO loginDTO, 
-                       BindingResult result, 
-                       HttpSession session,
-                       RedirectAttributes redirectAttributes) {
-        if (result.hasErrors()) {
-            return "auth/login";
-        }
-        
-        Optional<NguoiDung> nguoiDung = authService.authenticate(loginDTO.getTenDangNhap(), loginDTO.getMatKhau());
-        
-        if (nguoiDung.isPresent()) {
-            session.setAttribute("nguoiDung", nguoiDung.get());
-            session.setAttribute("vaiTro", nguoiDung.get().getVaiTro());
-            
-            // Redirect theo vai trò
-            String vaiTro = nguoiDung.get().getVaiTro();
-            if ("admin".equals(vaiTro)) {
-                return "redirect:/admin/dashboard";
-            } else if ("giang_vien".equals(vaiTro)) {
-                return "redirect:/giang-vien/dashboard";
-            } else {
-                return "redirect:/nguoi-hoc/dashboard";
-            }
-        } else {
-            redirectAttributes.addFlashAttribute("error", "Tên đăng nhập hoặc mật khẩu không đúng!");
-            return "redirect:/auth/login";
-        }
-    }
-    
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/auth/login";
-    }
-    
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
         model.addAttribute("registerDTO", new RegisterDTO());

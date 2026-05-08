@@ -1,100 +1,106 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-    <!-- Modern Sidebar Fragment -->
+    <!-- Modern Sidebar Fragment v3 -->
     <th:block th:fragment="modernSidebar">
-        <aside class="fixed left-0 top-0 h-screen w-64 bg-white/95 dark:bg-gray-800/95 backdrop-blur-lg shadow-2xl z-50 border-r border-gray-200/50 dark:border-gray-700/50">
-            <div class="flex flex-col h-full">
-                
-                <!-- User Info -->
-                <div class="p-4 border-b border-gray-200 dark:border-gray-700" th:if="${nguoiDung}">
-                    <div class="flex items-center space-x-3 p-3 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-600">
-                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white font-bold text-lg shadow-lg">
-                            <span th:text="${#strings.substring(nguoiDung?.tenDangNhap, 0, 1).toUpperCase()}">A</span>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-semibold text-gray-900 dark:text-white truncate" th:text="${nguoiDung?.tenDangNhap}">Admin</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-300">Quản trị viên</p>
-                        </div>
+        <aside class="sidebar-neo">
+            <!-- Brand -->
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <span class="sidebar-brand-text text-gradient">NTU Feedback</span>
+            </div>
+
+            <!-- User Info -->
+            <div class="sidebar-user" th:if="${nguoiDung}">
+                <div class="sidebar-user-card">
+                    <div class="sidebar-avatar">
+                        <span th:text="${#strings.substring(nguoiDung?.tenDangNhap, 0, 1).toUpperCase()}">A</span>
+                    </div>
+                    <div style="min-width:0; flex:1;">
+                        <div class="sidebar-user-name" th:text="${nguoiDung?.tenDangNhap}">Admin</div>
+                        <div class="sidebar-user-role">Quản trị viên</div>
                     </div>
                 </div>
-                
-                <!-- Navigation -->
-                <nav class="flex-1 overflow-y-auto p-4 space-y-1">
-                    <style>
-                        .menu-item-active {
-                            background: linear-gradient(to right, #3b82f6, #6366f1) !important;
-                            color: white !important;
-                            box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.3) !important;
-                            transform: translateY(2px) scale(0.97) !important;
-                        }
-                        .menu-item-active i {
-                            color: white !important;
-                        }
-                        .menu-item-active span {
-                            color: white !important;
-                        }
-                    </style>
-                    <a href="/admin/dashboard" 
-                       th:classappend="${#httpServletRequest != null && #httpServletRequest.requestURI != null && #strings.contains(#httpServletRequest.requestURI, '/admin/dashboard') && !#strings.contains(#httpServletRequest.requestURI, '/admin/khao-sat') && !#strings.contains(#httpServletRequest.requestURI, '/admin/giang-vien') && !#strings.contains(#httpServletRequest.requestURI, '/admin/hoc-phan') && !#strings.contains(#httpServletRequest.requestURI, '/admin/phan-cong') && !#strings.contains(#httpServletRequest.requestURI, '/admin/phan-hoi') && !#strings.contains(#httpServletRequest.requestURI, '/admin/nguoi-dung') ? 'menu-item-active' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}"
-                       class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 relative">
-                        <i class="fas fa-home w-5 text-center mr-3"></i>
-                        <span class="font-medium">Dashboard</span>
-                    </a>
-                    
-                    <a href="/admin/khao-sat" 
-                       th:classappend="${#httpServletRequest != null && #httpServletRequest.requestURI != null && #strings.contains(#httpServletRequest.requestURI, '/admin/khao-sat') ? 'menu-item-active' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}"
-                       class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 relative">
-                        <i class="fas fa-clipboard-list w-5 text-center mr-3"></i>
-                        <span class="font-medium">Khảo sát</span>
-                    </a>
-                    
-                    <a href="/admin/giang-vien" 
-                       th:classappend="${#httpServletRequest != null && #httpServletRequest.requestURI != null && #strings.contains(#httpServletRequest.requestURI, '/admin/giang-vien') ? 'menu-item-active' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}"
-                       class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 relative">
-                        <i class="fas fa-chalkboard-teacher w-5 text-center mr-3"></i>
-                        <span class="font-medium">Giảng viên</span>
-                    </a>
-                    
-                    <a href="/admin/nguoi-dung" 
-                       th:classappend="${#httpServletRequest != null && #httpServletRequest.requestURI != null && #strings.contains(#httpServletRequest.requestURI, '/admin/nguoi-dung') ? 'menu-item-active' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}"
-                       class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 relative">
-                        <i class="fas fa-users w-5 text-center mr-3"></i>
-                        <span class="font-medium">Người dùng</span>
-                    </a>
-                    
-                    <a href="/admin/hoc-phan" 
-                       th:classappend="${#httpServletRequest != null && #httpServletRequest.requestURI != null && #strings.contains(#httpServletRequest.requestURI, '/admin/hoc-phan') ? 'menu-item-active' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}"
-                       class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 relative">
-                        <i class="fas fa-book w-5 text-center mr-3"></i>
-                        <span class="font-medium">Học phần</span>
-                    </a>
-                    
-                    <a href="/admin/phan-cong" 
-                       th:classappend="${#httpServletRequest != null && #httpServletRequest.requestURI != null && #strings.contains(#httpServletRequest.requestURI, '/admin/phan-cong') ? 'menu-item-active' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}"
-                       class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 relative">
-                        <i class="fas fa-tasks w-5 text-center mr-3"></i>
-                        <span class="font-medium">Phân công</span>
-                    </a>
-                    
-                    <a href="/admin/phan-hoi" 
-                       th:classappend="${#httpServletRequest != null && #httpServletRequest.requestURI != null && #strings.contains(#httpServletRequest.requestURI, '/admin/phan-hoi') ? 'menu-item-active' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}"
-                       class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 relative">
-                        <i class="fas fa-comments w-5 text-center mr-3"></i>
-                        <span class="font-medium">Phản hồi</span>
-                    </a>
-                </nav>
-                
-                <!-- Logout -->
-                <div class="p-4 border-t border-gray-200 dark:border-gray-700">
-                    <a href="/auth/logout" class="flex items-center px-4 py-3 rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200">
-                        <i class="fas fa-sign-out-alt w-5 text-center mr-3"></i>
-                        <span class="font-medium">Đăng xuất</span>
-                    </a>
-                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="sidebar-nav">
+                <!-- Section: Tổng quan -->
+                <div class="sidebar-section">Tổng quan</div>
+
+                <a href="/admin/dashboard"
+                   th:classappend="${#httpServletRequest != null && #httpServletRequest.requestURI != null && #strings.contains(#httpServletRequest.requestURI, '/admin/dashboard') && !#strings.contains(#httpServletRequest.requestURI, '/admin/khao-sat') && !#strings.contains(#httpServletRequest.requestURI, '/admin/giang-vien') && !#strings.contains(#httpServletRequest.requestURI, '/admin/hoc-phan') && !#strings.contains(#httpServletRequest.requestURI, '/admin/phan-cong') && !#strings.contains(#httpServletRequest.requestURI, '/admin/phan-hoi') && !#strings.contains(#httpServletRequest.requestURI, '/admin/nguoi-dung') ? 'sidebar-link-active' : ''}"
+                   class="sidebar-link">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <!-- Section: Quản lý -->
+                <div class="sidebar-section" style="margin-top:0.75rem;">Quản lý</div>
+
+                <a href="/admin/khao-sat"
+                   th:classappend="${#httpServletRequest != null && #httpServletRequest.requestURI != null && #strings.contains(#httpServletRequest.requestURI, '/admin/khao-sat') ? 'sidebar-link-active' : ''}"
+                   class="sidebar-link">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Khảo sát</span>
+                </a>
+
+                <a href="/admin/giang-vien"
+                   th:classappend="${#httpServletRequest != null && #httpServletRequest.requestURI != null && #strings.contains(#httpServletRequest.requestURI, '/admin/giang-vien') ? 'sidebar-link-active' : ''}"
+                   class="sidebar-link">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span>Giảng viên</span>
+                </a>
+
+                <a href="/admin/nguoi-dung"
+                   th:classappend="${#httpServletRequest != null && #httpServletRequest.requestURI != null && #strings.contains(#httpServletRequest.requestURI, '/admin/nguoi-dung') ? 'sidebar-link-active' : ''}"
+                   class="sidebar-link">
+                    <i class="fas fa-users"></i>
+                    <span>Người dùng</span>
+                </a>
+
+                <a href="/admin/hoc-phan"
+                   th:classappend="${#httpServletRequest != null && #httpServletRequest.requestURI != null && #strings.contains(#httpServletRequest.requestURI, '/admin/hoc-phan') ? 'sidebar-link-active' : ''}"
+                   class="sidebar-link">
+                    <i class="fas fa-book"></i>
+                    <span>Học phần</span>
+                </a>
+
+                <a href="/admin/phan-cong"
+                   th:classappend="${#httpServletRequest != null && #httpServletRequest.requestURI != null && #strings.contains(#httpServletRequest.requestURI, '/admin/phan-cong') ? 'sidebar-link-active' : ''}"
+                   class="sidebar-link">
+                    <i class="fas fa-tasks"></i>
+                    <span>Phân công</span>
+                </a>
+
+                <a href="/admin/phan-hoi"
+                   th:classappend="${#httpServletRequest != null && #httpServletRequest.requestURI != null && #strings.contains(#httpServletRequest.requestURI, '/admin/phan-hoi') ? 'sidebar-link-active' : ''}"
+                   class="sidebar-link">
+                    <i class="fas fa-comments"></i>
+                    <span>Phản hồi</span>
+                </a>
+
+                <!-- Section: Hệ thống -->
+                <div class="sidebar-section" style="margin-top:0.75rem;">Hệ thống</div>
+
+                <a href="/admin/vai-tro"
+                   th:classappend="${#httpServletRequest != null && #httpServletRequest.requestURI != null && #strings.contains(#httpServletRequest.requestURI, '/admin/vai-tro') ? 'sidebar-link-active' : ''}"
+                   class="sidebar-link">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Vai trò & Quyền</span>
+                </a>
+            </nav>
+
+            <!-- Footer: Logout -->
+            <div class="sidebar-footer">
+                <a href="/auth/logout" class="sidebar-link" style="color:#ef4444;">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Đăng xuất</span>
+                </a>
             </div>
         </aside>
     </th:block>
 </body>
 </html>
-

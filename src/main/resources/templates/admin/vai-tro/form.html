@@ -1,0 +1,227 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${vaiTroDTO.vaiTroId != null ? 'Sửa Vai trò' : 'Thêm Vai trò'}">Thêm Vai trò - Admin</title>
+    <link rel="icon" type="image/x-icon" th:href="@{/img/meo.ico}">
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/img/meo.ico}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/design-system.css}">
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+    <script src="/js/dark-mode.js"></script>
+    <style>
+        * { transition: all 0.2s ease-in-out; }
+        /* Custom checkbox style */
+        .custom-checkbox {
+            appearance: none;
+            background-color: #fff;
+            margin: 0;
+            font: inherit;
+            color: currentColor;
+            width: 1.15em;
+            height: 1.15em;
+            border: 2px solid currentColor;
+            border-radius: 0.15em;
+            transform: translateY(-0.075em);
+            display: grid;
+            place-content: center;
+        }
+        .dark .custom-checkbox {
+            background-color: #374151;
+            border-color: #6b7280;
+        }
+        .custom-checkbox::before {
+            content: "";
+            width: 0.65em;
+            height: 0.65em;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em white;
+            background-color: transform;
+            transform-origin: bottom left;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+        .custom-checkbox:checked::before {
+            transform: scale(1);
+        }
+        .custom-checkbox:checked {
+            background-color: #4f46e5;
+            border-color: #4f46e5;
+        }
+    </style>
+</head>
+<body class="h-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/sidebar-v2 :: modernSidebar}"></div>
+    
+    <!-- Main Content -->
+    <div class="page-content min-h-screen">
+        <!-- Top Bar -->
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-b border-gray-200/50 dark:border-gray-700/50 shadow-sm">
+            <div class="px-8 py-5">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <a href="/admin/vai-tro" 
+                           class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors">
+                            <i class="fas fa-arrow-left text-xl"></i>
+                        </a>
+                        <div>
+                            <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent" th:text="${vaiTroDTO.vaiTroId != null ? 'Sửa Vai trò' : 'Thêm Vai trò mới'}"></h1>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Cấu hình thông tin và phân quyền cho vai trò</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <button onclick="toggleDarkMode()" 
+                                class="p-2.5 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all">
+                            <i class="fas fa-moon dark:hidden text-lg"></i>
+                            <i class="fas fa-sun hidden dark:inline text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Page Content -->
+        <main class="p-8">
+            <div class="max-w-5xl mx-auto">
+                <form th:action="@{${vaiTroDTO.vaiTroId != null ? '/admin/vai-tro/sua/' + vaiTroDTO.vaiTroId : '/admin/vai-tro/them'}}" 
+                      th:object="${vaiTroDTO}" 
+                      method="post" 
+                      class="space-y-6">
+                    
+                    <!-- Form Error Message -->
+                    <div th:if="${error}" class="bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500 p-4 rounded-r-xl shadow-sm">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-exclamation-circle text-red-500 dark:text-red-400 text-xl"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-red-700 dark:text-red-300 font-medium" th:text="${error}"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vai Trò Info Card -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-8 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 dark:bg-blue-400/5 rounded-bl-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
+                        
+                        <div class="flex items-center mb-6">
+                            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center text-xl shadow-inner mr-4">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <h2 class="text-xl font-bold text-gray-900 dark:text-white">Thông tin cơ bản</h2>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
+                            <!-- Mã Vai Trò (Floating Label) -->
+                            <div class="relative">
+                                <input type="text" id="tenVaiTro" th:field="*{tenVaiTro}"
+                                       class="block px-4 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-transparent rounded-xl border-2 border-gray-200 appearance-none dark:text-white dark:border-gray-700 dark:focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-600 peer transition-all shadow-sm hover:shadow-md"
+                                       placeholder=" "
+                                       th:classappend="${#fields.hasErrors('tenVaiTro')} ? 'border-red-500 dark:border-red-500 focus:border-red-500 focus:ring-red-500/20'">
+                                <label for="tenVaiTro" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] bg-white dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-4 peer-focus:scale-75 peer-focus:-translate-y-4 left-3 font-semibold">
+                                    <i class="fas fa-fingerprint mr-1"></i> Mã Vai trò (ROLE_...) <span class="text-red-500">*</span>
+                                </label>
+                                <p th:if="${#fields.hasErrors('tenVaiTro')}" class="mt-2 text-sm text-red-600 dark:text-red-400" th:errors="*{tenVaiTro}"></p>
+                            </div>
+                            
+                            <!-- Mô tả (Floating Label) -->
+                            <div class="relative">
+                                <input type="text" id="moTa" th:field="*{moTa}"
+                                       class="block px-4 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-transparent rounded-xl border-2 border-gray-200 appearance-none dark:text-white dark:border-gray-700 dark:focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/20 focus:border-blue-600 peer transition-all shadow-sm hover:shadow-md"
+                                       placeholder=" "
+                                       th:classappend="${#fields.hasErrors('moTa')} ? 'border-red-500 dark:border-red-500 focus:border-red-500 focus:ring-red-500/20'">
+                                <label for="moTa" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] bg-white dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-4 peer-focus:scale-75 peer-focus:-translate-y-4 left-3 font-semibold">
+                                    <i class="fas fa-tag mr-1"></i> Tên hiển thị (Mô tả) <span class="text-red-500">*</span>
+                                </label>
+                                <p th:if="${#fields.hasErrors('moTa')}" class="mt-2 text-sm text-red-600 dark:text-red-400" th:errors="*{moTa}"></p>
+                            </div>
+                            
+                            <!-- Mặc định (Toggle Switch) -->
+                            <div class="md:col-span-2 mt-2">
+                                <label class="flex items-center space-x-4 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-700 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-all cursor-pointer">
+                                    <div class="relative inline-flex items-center">
+                                        <input type="checkbox" th:field="*{macDinh}" class="sr-only peer">
+                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 shadow-inner"></div>
+                                    </div>
+                                    <div>
+                                        <span class="block text-sm font-bold text-gray-900 dark:text-white">Đặt làm vai trò mặc định</span>
+                                        <span class="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">Tự động gán cho người dùng mới đăng ký. (Chỉ có 1 vai trò được làm mặc định)</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phân quyền Card -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-8 relative overflow-hidden group">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 rounded-xl flex items-center justify-center text-xl shadow-inner mr-4">
+                                    <i class="fas fa-key"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">Phân quyền chi tiết</h2>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">Chọn các quyền hạn cho vai trò này</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="selectAllPermissions()" class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium">
+                                Chọn tất cả
+                            </button>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Loop qua các nhóm quyền -->
+                            <div th:each="entry : ${quyenTheoNhom}" class="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-5 border border-gray-100 dark:border-gray-700">
+                                <h3 class="font-bold text-gray-800 dark:text-gray-200 mb-4 pb-2 border-b border-gray-200 dark:border-gray-700 flex items-center">
+                                    <i class="fas fa-layer-group text-blue-500 mr-2 text-sm"></i>
+                                    <span th:text="${entry.key == 'HE_THONG' ? 'Hệ thống' : (entry.key == 'KHAO_SAT' ? 'Khảo sát' : (entry.key == 'DAO_TAO' ? 'Đào tạo' : entry.key))}">Nhóm</span>
+                                </h3>
+                                
+                                <div class="space-y-3">
+                                    <!-- Loop qua các quyền trong nhóm -->
+                                    <label th:each="q : ${entry.value}" class="flex items-start space-x-3 cursor-pointer group/label">
+                                        <div class="pt-0.5">
+                                            <input type="checkbox" th:field="*{quyenIds}" th:value="${q.quyenId}" class="permission-checkbox custom-checkbox text-indigo-600 transition-colors">
+                                        </div>
+                                        <div class="flex flex-col">
+                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover/label:text-indigo-600 dark:group-hover/label:text-indigo-400 transition-colors" 
+                                                  th:text="${q.tenQuyen != null ? q.tenQuyen : q.maQuyen}">Tên quyền</span>
+                                            <span class="text-xs text-gray-500 dark:text-gray-400 mt-0.5" th:text="${q.moTa}">Mô tả chi tiết</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Buttons -->
+                    <div class="flex items-center justify-end space-x-4 pt-4">
+                        <a href="/admin/vai-tro" 
+                           class="px-6 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all shadow-sm">
+                            <i class="fas fa-times mr-2"></i>Hủy bỏ
+                        </a>
+                        <button type="submit" 
+                                class="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all">
+                            <i class="fas fa-save mr-2"></i>Lưu vai trò
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let allSelected = false;
+        function selectAllPermissions() {
+            const checkboxes = document.querySelectorAll('.permission-checkbox');
+            allSelected = !allSelected;
+            checkboxes.forEach(cb => cb.checked = allSelected);
+        }
+    </script>
+</body>
+</html>

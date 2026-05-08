@@ -16,18 +16,18 @@ public interface NguoiDungRepository extends JpaRepository<NguoiDung, Long> {
     Optional<NguoiDung> findByTenDangNhapAndTrangThai(String tenDangNhap, Boolean trangThai);
     
     // Tìm kiếm và lọc với phân trang
-    @Query("SELECT n FROM NguoiDung n WHERE " +
+    @Query("SELECT DISTINCT n FROM NguoiDung n LEFT JOIN n.danhSachVaiTro v WHERE " +
            "(:keyword IS NULL OR :keyword = '' OR LOWER(n.tenDangNhap) LIKE LOWER(CONCAT('%', :keyword, '%'))) AND " +
-           "(:vaiTro IS NULL OR :vaiTro = '' OR n.vaiTro = :vaiTro) AND " +
+           "(:vaiTro IS NULL OR :vaiTro = '' OR v.tenVaiTro = :vaiTro) AND " +
            "(:trangThai IS NULL OR n.trangThai = :trangThai) " +
            "ORDER BY n.nguoiDungId ASC")
     List<NguoiDung> timKiemVaLoc(@Param("keyword") String keyword, 
                                   @Param("vaiTro") String vaiTro, 
                                   @Param("trangThai") Boolean trangThai);
     
-    @Query("SELECT COUNT(n) FROM NguoiDung n WHERE " +
+    @Query("SELECT COUNT(DISTINCT n) FROM NguoiDung n LEFT JOIN n.danhSachVaiTro v WHERE " +
            "(:keyword IS NULL OR :keyword = '' OR LOWER(n.tenDangNhap) LIKE LOWER(CONCAT('%', :keyword, '%'))) AND " +
-           "(:vaiTro IS NULL OR :vaiTro = '' OR n.vaiTro = :vaiTro) AND " +
+           "(:vaiTro IS NULL OR :vaiTro = '' OR v.tenVaiTro = :vaiTro) AND " +
            "(:trangThai IS NULL OR n.trangThai = :trangThai)")
     long demTimKiemVaLoc(@Param("keyword") String keyword, 
                          @Param("vaiTro") String vaiTro, 
